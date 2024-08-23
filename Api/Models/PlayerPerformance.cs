@@ -2,7 +2,7 @@ namespace Api.Models
 {
     public class PlayerPerformance
     {
-        public int PlayerPerformanceID { get; set; }
+        public int PlayerPerformanceId { get; set; }
         public int Minutes { get; set; }
         public int EventPoints { get; set; }
         public int TotalPoints { get; set; }
