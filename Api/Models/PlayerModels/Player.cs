@@ -1,8 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System.ComponentModel.DataAnnotations;
-
-namespace Api.Models
+namespace Api.Models.PlayerModels
 {
     public class Player
     {   

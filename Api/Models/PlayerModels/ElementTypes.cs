@@ -1,6 +1,4 @@
-
-
-namespace Api.Models
+namespace Api.Models.PlayerModels
 {
     public class ElementTypes
     {

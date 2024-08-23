@@ -1,6 +1,4 @@
-
-
-namespace Api.Models
+namespace Api.Models.PlayerModels
 {
     public class PlayerStatistics
     {
@@ -20,7 +18,7 @@ namespace Api.Models
       public decimal GoalsConcededPer90  { get; set; }  
       public decimal StartsPer90  { get; set; }  
       public decimal CleanSheetsPer90  { get; set; }
-      
+    
       public int PlayerId { get; set; }
       public Player player { get; set; }
 
