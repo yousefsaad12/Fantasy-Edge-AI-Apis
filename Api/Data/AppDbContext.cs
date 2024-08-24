@@ -78,7 +78,58 @@ namespace Api.Data
             #endregion
 
 
-            
+             #region 
+             modelBuilder.Entity<PlayerPerformance>(entity => {
+
+                entity.ToTable("PlayersPerformance");
+                entity.HasKey(e => e.PlayerPerformanceId);
+
+                entity.Property(e => e.Minutes).IsRequired();
+
+                entity.Property(e => e.EventPoints).IsRequired();
+
+                entity.Property(e => e.TotalPoints).IsRequired();
+
+                entity.Property(e => e.GoalsScored).IsRequired();
+
+                entity.Property(e => e.Assists).IsRequired();
+
+                entity.Property(e => e.CleanSheets).IsRequired();
+
+                entity.Property(e => e.GoalsConceded).IsRequired();
+
+                entity.Property(e => e.PenaltiesSaved).IsRequired();
+
+                entity.Property(e => e.PenaltiesMissed).IsRequired();
+
+                entity.Property(e => e.OwnGoals).IsRequired();
+
+                entity.Property(e => e.YellowCards).IsRequired();
+
+                entity.Property(e => e.RedCards).IsRequired();
+
+                entity.Property(e => e.Saves).IsRequired();
+
+                entity.Property(e => e.Bonus).IsRequired();
+
+                entity.Property(e => e.BonusPointsSystem).IsRequired();
+
+                entity.Property(e => e.DreamTeamCount).IsRequired();
+               
+
+                entity.HasOne(e => e.player)
+                      .WithMany()
+                      .HasForeignKey(e => e.PlayerId)
+                      .IsRequired();
+
+                entity.HasOne(e => e.Gameweeks)
+                      .WithMany()
+                      .HasForeignKey(e => e.GameweekId)
+                      .IsRequired();
+                
+            });
+
+            #endregion
            
 
         }
