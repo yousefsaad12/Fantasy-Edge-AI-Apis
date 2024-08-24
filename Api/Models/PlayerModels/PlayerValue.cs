@@ -14,6 +14,6 @@ namespace Api.Models.PlayerModels
 
         // Navigation Properties
         public Player player { get; set; }
-        public Gameweeks gameweeks { get; set; }
+        public Gameweeks Gameweeks { get; set; }
     }
 }

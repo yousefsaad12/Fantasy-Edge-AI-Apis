@@ -214,6 +214,41 @@ namespace Api.Data
             });
 
             #endregion
+
+
+             // PlayerValue entity
+            #region 
+             modelBuilder.Entity<PlayerValue>(entity => {
+
+                entity.ToTable("Players");
+                entity.HasKey(e => e.PlayerValueId);
+
+                entity.Property(e => e.NowCost).IsRequired();
+
+                entity.Property(e => e.CostChangeEvent).IsRequired();
+
+                entity.Property(e => e.CostChangeStart).IsRequired();
+
+                entity.Property(e => e.SelectedByPercent).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.ValueForm).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.ValueSeason).IsRequired().HasColumnType("decimal(5, 2)");
+
+
+                entity.HasOne(e => e.player)
+                      .WithMany()
+                      .HasForeignKey(e => e.PlayerId)
+                      .IsRequired();
+
+                entity.HasOne(e => e.Gameweeks)
+                      .WithMany()
+                      .HasForeignKey(e => e.GameweekId)
+                      .IsRequired();
+
+            });
+
+            #endregion
            
 
         }
