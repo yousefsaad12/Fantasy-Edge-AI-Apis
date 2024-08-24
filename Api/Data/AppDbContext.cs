@@ -72,7 +72,6 @@ namespace Api.Data
                 entity.HasMany(e => e.PlayerStatistics)
                       .WithOne(pf => pf.player)
                       .HasForeignKey(pf => pf.PlayerId);
-                
             });
 
             #endregion
@@ -127,7 +126,6 @@ namespace Api.Data
                       .WithMany(gw => gw.PlayerPerformances)
                       .HasForeignKey(e => e.GameweekId)
                       .IsRequired();
-                
             });
 
             #endregion
@@ -387,6 +385,51 @@ namespace Api.Data
             #endregion
            
 
+
+            modelBuilder.Entity<Player>()
+                .HasIndex(p => new { p.FirstName, p.SecondName })
+                .HasDatabaseName("idx_player_firstname_secondname");
+
+            modelBuilder.Entity<PlayerPerformance>()
+            .HasIndex(pp => pp.GameweekId)
+            .HasDatabaseName("idx_player_performance_gameweek");
+
+            modelBuilder.Entity<PlayerPerformance>()
+            .HasIndex(pp => pp.PlayerId)
+            .HasDatabaseName("idx_player_performance_player");
+
+            modelBuilder.Entity<PlayerValue>()
+            .HasIndex(pv => pv.PlayerId)
+            .HasDatabaseName("idx_player_value_player");
+
+            modelBuilder.Entity<PlayerValue>()
+            .HasIndex(pv => pv.GameweekId)
+            .HasDatabaseName("idx_player_value_gameweek");
+
+            modelBuilder.Entity<PlayerTransfer>()
+            .HasIndex(pt => pt.PlayerId)
+            .HasDatabaseName("idx_player_transfer_player");
+
+            modelBuilder.Entity<PlayerTransfer>()
+            .HasIndex(pt => pt.GameweekId)
+            .HasDatabaseName("idx_player_transfer_gameweek");
+
+            modelBuilder.Entity<PlayerStatistics>()
+            .HasIndex(ps => ps.PlayerId)
+            .HasDatabaseName("idx_player_statistics_player");
+
+            modelBuilder.Entity<PlayerStatistics>()
+            .HasIndex(ps => ps.GameweekId)
+            .HasDatabaseName("idx_player_statistics_gameweek");
+
+
+            modelBuilder.Entity<TeamPerformance>()
+            .HasIndex(tp => tp.GameweekId)
+            .HasDatabaseName("idx_team_performance_gameweek");
+
+            modelBuilder.Entity<TeamPerformance>()
+            .HasIndex(tp => tp.TeamId)
+            .HasDatabaseName("idx_team_performance_team");
         }
 
 
