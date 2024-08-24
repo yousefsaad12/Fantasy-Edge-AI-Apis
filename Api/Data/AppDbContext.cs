@@ -48,12 +48,12 @@ namespace Api.Data
                 entity.Property(e => e.NewsAdded).IsRequired(false).HasColumnType("datetime");
 
                 entity.HasOne(e => e.team)
-                      .WithMany()
+                      .WithMany(t => t.Players)
                       .HasForeignKey(e => e.TeamId)
                       .IsRequired();
 
                 entity.HasOne(e => e.elementType)
-                      .WithMany()
+                      .WithMany(et => et.Players)
                       .HasForeignKey(e => e.ElementTypeId)
                       .IsRequired();
 
@@ -119,12 +119,12 @@ namespace Api.Data
                
 
                 entity.HasOne(e => e.player)
-                      .WithMany()
+                      .WithMany(p => p.PlayerPerformances)
                       .HasForeignKey(e => e.PlayerId)
                       .IsRequired();
 
                 entity.HasOne(e => e.Gameweeks)
-                      .WithMany()
+                      .WithMany(gw => gw.PlayerPerformances)
                       .HasForeignKey(e => e.GameweekId)
                       .IsRequired();
                 
@@ -137,7 +137,7 @@ namespace Api.Data
             #region 
              modelBuilder.Entity<PlayerStatistics>(entity => {
 
-                entity.ToTable("PlayersPerformance");
+                entity.ToTable("PlayersStatistics");
                 entity.HasKey(e => e.PlayerStatisticsId);
 
                 entity.Property(e => e.Influence).IsRequired();
@@ -174,12 +174,12 @@ namespace Api.Data
                
 
                 entity.HasOne(e => e.player)
-                      .WithMany()
+                      .WithMany(p => p.PlayerStatistics)
                       .HasForeignKey(e => e.PlayerId)
                       .IsRequired();
 
                 entity.HasOne(e => e.Gameweeks)
-                      .WithMany()
+                      .WithMany(gw => gw.PlayerStatistics)
                       .HasForeignKey(e => e.GameweekId)
                       .IsRequired();
                 
@@ -191,7 +191,7 @@ namespace Api.Data
             #region 
              modelBuilder.Entity<PlayerTransfer>(entity => {
 
-                entity.ToTable("Players");
+                entity.ToTable("PlayersTransfer");
                 entity.HasKey(e => e.PlayerTransferId);
 
                 entity.Property(e => e.TransfersIn).IsRequired();
@@ -202,12 +202,12 @@ namespace Api.Data
 
 
                 entity.HasOne(e => e.player)
-                      .WithMany()
+                      .WithMany(p => p.PlayerTransfers)
                       .HasForeignKey(e => e.PlayerId)
                       .IsRequired();
 
                 entity.HasOne(e => e.Gameweeks)
-                      .WithMany()
+                      .WithMany(gw => gw.PlayerTransfer)
                       .HasForeignKey(e => e.GameweekId)
                       .IsRequired();
 
@@ -220,7 +220,7 @@ namespace Api.Data
             #region 
              modelBuilder.Entity<PlayerValue>(entity => {
 
-                entity.ToTable("Players");
+                entity.ToTable("PlayersValue");
                 entity.HasKey(e => e.PlayerValueId);
 
                 entity.Property(e => e.NowCost).IsRequired();
@@ -237,13 +237,47 @@ namespace Api.Data
 
 
                 entity.HasOne(e => e.player)
-                      .WithMany()
+                      .WithMany(p => p.PlayerValues)
                       .HasForeignKey(e => e.PlayerId)
                       .IsRequired();
+                      
 
                 entity.HasOne(e => e.Gameweeks)
-                      .WithMany()
+                      .WithMany(gw => gw.PlayerValue)
                       .HasForeignKey(e => e.GameweekId)
+                      .IsRequired();
+
+            });
+
+            #endregion
+
+             // Team entity
+             #region 
+             modelBuilder.Entity<Team>(entity => {
+
+                entity.ToTable("Teams");
+                entity.HasKey(e => e.TeamId);
+
+                entity.Property(e => e.TeamName).IsRequired().HasMaxLength(150);
+
+                entity.Property(e => e.ShortName).IsRequired().HasMaxLength(10);
+
+                entity.Property(e => e.Code).IsRequired();
+
+                entity.Property(e => e.PulseID).IsRequired();
+
+                entity.Property(e => e.TeamDivision).IsRequired().HasMaxLength(150);
+
+
+
+                entity.HasMany(e => e.Players)
+                      .WithOne(p => p.team)
+                      .HasForeignKey(p => p.TeamId)
+                      .IsRequired();
+
+                entity.HasMany(e => e.TeamPerformances)
+                      .WithOne(tp => tp.team)
+                      .HasForeignKey(tp => tp.TeamId)
                       .IsRequired();
 
             });
