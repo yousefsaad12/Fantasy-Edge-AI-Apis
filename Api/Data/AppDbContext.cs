@@ -32,19 +32,19 @@ namespace Api.Data
                 entity.ToTable("Players");
                 entity.HasKey(e => e.PlayerId);
 
-                entity.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.FirstName).IsRequired().HasColumnType("nvarchar(100)");
 
-                entity.Property(e => e.SecondName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.SecondName).IsRequired().HasColumnType("nvarchar(100)");
 
-                entity.Property(e => e.WebName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.WebName).IsRequired().HasColumnType("nvarchar(100)");
 
-                entity.Property(e => e.Status).IsRequired().HasMaxLength(2);
+                entity.Property(e => e.Status).IsRequired().HasColumnType("nvarchar(2)");
 
                 entity.Property(e => e.SquadNumber).IsRequired(false).HasColumnType("int");
                 entity.Property(e => e.ChancePlayingNextRound).IsRequired(false).HasColumnType("int");
                 entity.Property(e => e.ChancePlayingThisRound).IsRequired(false).HasColumnType("int");
 
-                entity.Property(e => e.News).IsRequired(false).HasMaxLength(300);
+                entity.Property(e => e.News).IsRequired(false).HasColumnType("nvarchar(300)");
                 entity.Property(e => e.NewsAdded).IsRequired(false).HasColumnType("datetime");
 
                 entity.HasOne(e => e.team)
@@ -259,7 +259,7 @@ namespace Api.Data
                 entity.ToTable("ElementTypes");
                 entity.HasKey(e => e.ElementTypeId);
 
-                entity.Property(e => e.TypeName).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.TypeName).IsRequired().HasColumnType("nvarchar(20)");
 
 
                 entity.HasMany(e => e.Players)
@@ -279,7 +279,7 @@ namespace Api.Data
                 entity.ToTable("Teams");
                 entity.HasKey(e => e.TeamId);
 
-                entity.Property(e => e.TeamName).IsRequired().HasMaxLength(150);
+                entity.Property(e => e.TeamName).IsRequired().HasColumnType("nvarchar(150)");
 
                 entity.Property(e => e.ShortName).IsRequired().HasMaxLength(10);
 
@@ -287,7 +287,7 @@ namespace Api.Data
 
                 entity.Property(e => e.PulseID).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.TeamDivision).IsRequired().HasMaxLength(150);
+                entity.Property(e => e.TeamDivision).IsRequired().HasColumnType("nvarchar(150)");
 
 
 
@@ -305,7 +305,7 @@ namespace Api.Data
 
             #endregion
 
-             // Team entity
+             // TeamPerformance entity
              #region 
              modelBuilder.Entity<TeamPerformance>(entity => {
 
@@ -335,6 +335,51 @@ namespace Api.Data
                 entity.HasOne(e => e.team)
                       .WithMany(t => t.TeamPerformances)
                       .HasForeignKey(e => e.TeamId)
+                      .IsRequired();
+
+            });
+
+            #endregion
+
+            // Gameweeks entity
+
+             #region 
+             modelBuilder.Entity<Gameweeks>(entity => {
+
+                entity.ToTable("Gameweeks");
+                entity.HasKey(e => e.GameweekId);
+
+                entity.Property(e => e.StartDate).IsRequired().HasColumnType("datetime");
+                entity.Property(e => e.EndDate).IsRequired().HasColumnType("datetime");
+
+
+                entity.HasMany(e => e.PlayerPerformances)
+                      .WithOne(pl => pl.Gameweeks)
+                      .HasForeignKey(pl => pl.GameweekId)
+                      .IsRequired();
+
+                
+                entity.HasMany(e => e.TeamPerformances)
+                      .WithOne(pl => pl.Gameweeks)
+                      .HasForeignKey(pl => pl.GameweekId)
+                      .IsRequired();
+
+                
+                entity.HasMany(e => e.PlayerStatistics)
+                      .WithOne(pl => pl.Gameweeks)
+                      .HasForeignKey(pl => pl.GameweekId)
+                      .IsRequired();
+
+                 
+                entity.HasMany(e => e.PlayerTransfer)
+                      .WithOne(pl => pl.Gameweeks)
+                      .HasForeignKey(pl => pl.GameweekId)
+                      .IsRequired();
+
+                 
+                entity.HasMany(e => e.PlayerValue)
+                      .WithOne(pl => pl.Gameweeks)
+                      .HasForeignKey(pl => pl.GameweekId)
                       .IsRequired();
 
             });
