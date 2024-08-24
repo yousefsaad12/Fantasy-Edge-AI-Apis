@@ -14,7 +14,7 @@ namespace Api.Models.TeamModels
         public int TeamId  { get; set; }
 
         // Navigation Properties
-        public Gameweeks gameweeks { get; set; }
+        public Gameweeks Gameweeks { get; set; }
         public Team team { get; set; }
 
     }

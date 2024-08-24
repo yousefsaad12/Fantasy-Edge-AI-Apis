@@ -40,9 +40,9 @@ namespace Api.Data
 
                 entity.Property(e => e.Status).IsRequired().HasMaxLength(2);
 
-                entity.Property(e => e.SquadNumber).IsRequired(false);
-                entity.Property(e => e.ChancePlayingNextRound).IsRequired(false);
-                entity.Property(e => e.ChancePlayingThisRound).IsRequired(false);
+                entity.Property(e => e.SquadNumber).IsRequired(false).HasColumnType("int");
+                entity.Property(e => e.ChancePlayingNextRound).IsRequired(false).HasColumnType("int");
+                entity.Property(e => e.ChancePlayingThisRound).IsRequired(false).HasColumnType("int");
 
                 entity.Property(e => e.News).IsRequired(false).HasMaxLength(300);
                 entity.Property(e => e.NewsAdded).IsRequired(false).HasColumnType("datetime");
@@ -85,37 +85,37 @@ namespace Api.Data
                 entity.ToTable("PlayersPerformance");
                 entity.HasKey(e => e.PlayerPerformanceId);
 
-                entity.Property(e => e.Minutes).IsRequired();
+                entity.Property(e => e.Minutes).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.EventPoints).IsRequired();
+                entity.Property(e => e.EventPoints).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.TotalPoints).IsRequired();
+                entity.Property(e => e.TotalPoints).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.GoalsScored).IsRequired();
+                entity.Property(e => e.GoalsScored).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.Assists).IsRequired();
+                entity.Property(e => e.Assists).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.CleanSheets).IsRequired();
+                entity.Property(e => e.CleanSheets).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.GoalsConceded).IsRequired();
+                entity.Property(e => e.GoalsConceded).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.PenaltiesSaved).IsRequired();
+                entity.Property(e => e.PenaltiesSaved).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.PenaltiesMissed).IsRequired();
+                entity.Property(e => e.PenaltiesMissed).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.OwnGoals).IsRequired();
+                entity.Property(e => e.OwnGoals).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.YellowCards).IsRequired();
+                entity.Property(e => e.YellowCards).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.RedCards).IsRequired();
+                entity.Property(e => e.RedCards).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.Saves).IsRequired();
+                entity.Property(e => e.Saves).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.Bonus).IsRequired();
+                entity.Property(e => e.Bonus).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.BonusPointsSystem).IsRequired();
+                entity.Property(e => e.BonusPointsSystem).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.DreamTeamCount).IsRequired();
+                entity.Property(e => e.DreamTeamCount).IsRequired().HasColumnType("int");
                
 
                 entity.HasOne(e => e.player)
@@ -140,7 +140,7 @@ namespace Api.Data
                 entity.ToTable("PlayersStatistics");
                 entity.HasKey(e => e.PlayerStatisticsId);
 
-                entity.Property(e => e.Influence).IsRequired();
+                entity.Property(e => e.Influence).IsRequired().HasColumnType("int");
 
                 entity.Property(e => e.Creativity).IsRequired().HasColumnType("decimal(5, 2)");
 
@@ -194,11 +194,11 @@ namespace Api.Data
                 entity.ToTable("PlayersTransfer");
                 entity.HasKey(e => e.PlayerTransferId);
 
-                entity.Property(e => e.TransfersIn).IsRequired();
+                entity.Property(e => e.TransfersIn).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.TransfersInEvent).IsRequired();
+                entity.Property(e => e.TransfersInEvent).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.TransfersOut).IsRequired();
+                entity.Property(e => e.TransfersOut).IsRequired().HasColumnType("int");
 
 
                 entity.HasOne(e => e.player)
@@ -220,14 +220,14 @@ namespace Api.Data
             #region 
              modelBuilder.Entity<PlayerValue>(entity => {
 
-                entity.ToTable("PlayersValue");
+                entity.ToTable("PlayersValues");
                 entity.HasKey(e => e.PlayerValueId);
 
-                entity.Property(e => e.NowCost).IsRequired();
+                entity.Property(e => e.NowCost).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.CostChangeEvent).IsRequired();
+                entity.Property(e => e.CostChangeEvent).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.CostChangeStart).IsRequired();
+                entity.Property(e => e.CostChangeStart).IsRequired().HasColumnType("int");
 
                 entity.Property(e => e.SelectedByPercent).IsRequired().HasColumnType("decimal(5, 2)");
 
@@ -262,9 +262,9 @@ namespace Api.Data
 
                 entity.Property(e => e.ShortName).IsRequired().HasMaxLength(10);
 
-                entity.Property(e => e.Code).IsRequired();
+                entity.Property(e => e.Code).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.PulseID).IsRequired();
+                entity.Property(e => e.PulseID).IsRequired().HasColumnType("int");
 
                 entity.Property(e => e.TeamDivision).IsRequired().HasMaxLength(150);
 
@@ -278,6 +278,42 @@ namespace Api.Data
                 entity.HasMany(e => e.TeamPerformances)
                       .WithOne(tp => tp.team)
                       .HasForeignKey(tp => tp.TeamId)
+                      .IsRequired();
+
+            });
+
+            #endregion
+
+             // Team entity
+             #region 
+             modelBuilder.Entity<TeamPerformance>(entity => {
+
+                entity.ToTable("TeamPerformance");
+                entity.HasKey(e => e.TeamPerformanceId);
+
+                entity.Property(e => e.Played).IsRequired().HasColumnType("int");
+
+                entity.Property(e => e.Win).IsRequired().HasColumnType("int");
+
+                entity.Property(e => e.Loss).IsRequired().HasColumnType("int");
+
+                entity.Property(e => e.Draw).IsRequired().HasColumnType("int");
+
+                entity.Property(e => e.Points).IsRequired().HasColumnType("int");
+
+                entity.Property(e => e.Position).IsRequired().HasColumnType("int");
+                
+
+
+
+                entity.HasOne(e => e.Gameweeks)
+                      .WithMany(gw => gw.TeamPerformances)
+                      .HasForeignKey(e => e.GameweekId)
+                      .IsRequired();
+
+                entity.HasOne(e => e.team)
+                      .WithMany(t => t.TeamPerformances)
+                      .HasForeignKey(e => e.TeamId)
                       .IsRequired();
 
             });
