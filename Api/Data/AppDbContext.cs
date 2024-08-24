@@ -78,6 +78,7 @@ namespace Api.Data
             #endregion
 
 
+            // PlayerPerformance entity
              #region 
              modelBuilder.Entity<PlayerPerformance>(entity => {
 
@@ -115,6 +116,61 @@ namespace Api.Data
                 entity.Property(e => e.BonusPointsSystem).IsRequired();
 
                 entity.Property(e => e.DreamTeamCount).IsRequired();
+               
+
+                entity.HasOne(e => e.player)
+                      .WithMany()
+                      .HasForeignKey(e => e.PlayerId)
+                      .IsRequired();
+
+                entity.HasOne(e => e.Gameweeks)
+                      .WithMany()
+                      .HasForeignKey(e => e.GameweekId)
+                      .IsRequired();
+                
+            });
+
+            #endregion
+
+
+            // PlayerStatistics entity
+            #region 
+             modelBuilder.Entity<PlayerStatistics>(entity => {
+
+                entity.ToTable("PlayersPerformance");
+                entity.HasKey(e => e.PlayerStatisticsId);
+
+                entity.Property(e => e.Influence).IsRequired();
+
+                entity.Property(e => e.Creativity).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.Threat).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.IctIndex).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.ExpectedGoals).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.ExpectedAssists).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.ExpectedGoalInvolvements).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.ExpectedGoalsConceded).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.ExpectedGoalsPer90).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.ExpectedAssistsPer90).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.ExpectedGoalInvolvementsPer90).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.ExpectedGoalsConcededPer90).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.GoalsConcededPer90).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.StartsPer90).IsRequired().HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.CleanSheetsPer90).IsRequired().HasColumnType("decimal(5, 2)");
+
+                
                
 
                 entity.HasOne(e => e.player)

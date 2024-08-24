@@ -20,10 +20,10 @@ namespace Api.Models.PlayerModels
       public decimal CleanSheetsPer90  { get; set; }
     
       public int PlayerId { get; set; }
-      public int gameweekId { get; set; }
+      public int GameweekId { get; set; }
 
       // Navigation Properties
-      public Gameweeks gameweeks { get; set; }
+      public Gameweeks Gameweeks { get; set; }
       public Player player { get; set; }
 
     }
