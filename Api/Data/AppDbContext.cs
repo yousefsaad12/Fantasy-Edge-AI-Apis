@@ -251,6 +251,27 @@ namespace Api.Data
 
             #endregion
 
+            // ElementTypes entity
+
+             #region 
+             modelBuilder.Entity<ElementTypes>(entity => {
+
+                entity.ToTable("ElementTypes");
+                entity.HasKey(e => e.ElementTypeId);
+
+                entity.Property(e => e.TypeName).IsRequired().HasMaxLength(20);
+
+
+                entity.HasMany(e => e.Players)
+                      .WithOne(p => p.elementType)
+                      .HasForeignKey(p => p.ElementTypeId)
+                      .IsRequired();
+
+            });
+
+            #endregion
+
+
              // Team entity
              #region 
              modelBuilder.Entity<Team>(entity => {
