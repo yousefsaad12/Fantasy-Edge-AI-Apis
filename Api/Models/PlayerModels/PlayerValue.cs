@@ -9,7 +9,11 @@ namespace Api.Models.PlayerModels
         public decimal SelectedByPercent { get; set; }
         public decimal  ValueForm { get; set; }
         public decimal ValueSeason { get; set; }
+        public int GameweekId { get; set; }
         public int PlayerId { get; set; }
+
+        // Navigation Properties
         public Player player { get; set; }
+        public Gameweeks gameweeks { get; set; }
     }
 }

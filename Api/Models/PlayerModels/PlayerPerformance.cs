@@ -23,9 +23,10 @@ namespace Api.Models.PlayerModels
         public int DreamTeamCount  { get; set; }
 
         public int PlayerId { get; set; }
-        public Player player { get; set; }
-
         public int GameweekId { get; set; }
+
+        // Navigation Properties
+        public Player player { get; set; }
         public Gameweeks Gameweeks { get; set; }
         
     }

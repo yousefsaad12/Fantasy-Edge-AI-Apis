@@ -7,7 +7,11 @@ namespace Api.Models.PlayerModels
         public int TransfersInEvent  { get; set; }
         public int TransfersOut   { get; set; }
         public int TransfersOutEvent   { get; set; }
+        public int GameweekId { get; set; }
         public int PlayerId  { get; set; }
+
+        // Navigation Properties
         public Player player  { get; set; }
+        public Gameweeks gameweeks { get; set; }
     }
 }

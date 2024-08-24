@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Api.Models.TeamModels
 {
@@ -14,11 +10,11 @@ namespace Api.Models.TeamModels
         public int Draw { get; set; }
         public int Points  { get; set; }
         public int Position   { get; set; }
-
         public int GameweekId { get; set; }
-        public Gameweeks gameweeks { get; set; }
-
         public int TeamId  { get; set; }
+
+        // Navigation Properties
+        public Gameweeks gameweeks { get; set; }
         public Team team { get; set; }
 
     }
