@@ -186,6 +186,34 @@ namespace Api.Data
             });
 
             #endregion
+
+             // PlayerTransfer entity
+            #region 
+             modelBuilder.Entity<PlayerTransfer>(entity => {
+
+                entity.ToTable("Players");
+                entity.HasKey(e => e.PlayerTransferId);
+
+                entity.Property(e => e.TransfersIn).IsRequired();
+
+                entity.Property(e => e.TransfersInEvent).IsRequired();
+
+                entity.Property(e => e.TransfersOut).IsRequired();
+
+
+                entity.HasOne(e => e.player)
+                      .WithMany()
+                      .HasForeignKey(e => e.PlayerId)
+                      .IsRequired();
+
+                entity.HasOne(e => e.Gameweeks)
+                      .WithMany()
+                      .HasForeignKey(e => e.GameweekId)
+                      .IsRequired();
+
+            });
+
+            #endregion
            
 
         }
