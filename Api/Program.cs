@@ -37,7 +37,7 @@ app.MapGet("/fantasy", async ([FromServices] IFetchingService fantasyService) =>
 {
     var url = "https://fantasy.premierleague.com/api/bootstrap-static/";
     var data = await fantasyService.FetchDataAsync(url);  // Adjust model as necessary
-    return Results.Content(data, "application/json");
+    return Results.Ok(data);
 });
 
 app.UseHttpsRedirection();
