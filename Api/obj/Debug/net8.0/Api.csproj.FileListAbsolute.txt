@@ -135,3 +135,4 @@ E:\FantasyEdge\Backend\Api\obj\Debug\net8.0\Api.pdb
 E:\FantasyEdge\Backend\Api\obj\Debug\net8.0\Api.genruntimeconfig.cache
 E:\FantasyEdge\Backend\Api\obj\Debug\net8.0\ref\Api.dll
 E:\FantasyEdge\Backend\Api\obj\Debug\net8.0\Api.sourcelink.json
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Newtonsoft.Json.dll

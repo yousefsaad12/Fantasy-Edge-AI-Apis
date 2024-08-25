@@ -1,5 +1,7 @@
 
 
+
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,9 +12,17 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IFetchingService, FetchingService>();
+
+
 builder.Services.AddDbContext<AppDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+
+builder.Services.AddHttpClient();
+
 
 var app = builder.Build();
 
@@ -22,6 +32,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapGet("/fantasy", async ([FromServices] IFetchingService fantasyService) =>
+{
+    var url = "https://fantasy.premierleague.com/api/bootstrap-static/";
+    var data = await fantasyService.FetchDataAsync(url);  // Adjust model as necessary
+    return Results.Content(data, "application/json");
+});
 
 app.UseHttpsRedirection();
 
