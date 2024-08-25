@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Api.Interfaces
 {
     public interface IFetchingService
     {
-        public  Task<string> FetchDataAsync(string url);
+        public Task<FantasyForm> FetchDataAsync(string url);
     }
 }

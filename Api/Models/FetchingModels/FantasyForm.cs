@@ -4,7 +4,7 @@ namespace Api.Models.FetchingModels
 {
     public class FantasyForm
     {
-        ICollection<PlayerJsonForm> playerJsonForms;
-        ICollection<TeamsJsonForm> TeamsJsonForms;
+       public ICollection<PlayerJsonForm> playerJsonForms { get; set; }
+      public ICollection<TeamsJsonForm> teamsJsonForms { get; set; }
     }
 }

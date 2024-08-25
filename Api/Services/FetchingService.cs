@@ -1,5 +1,7 @@
 
+using System.Text.Json;
 using Api.Interfaces;
+using Api.Models.FetchingModels;
 using Newtonsoft.Json;
 
 namespace Api.Services
@@ -13,17 +15,26 @@ namespace Api.Services
             _httpClient = httpClient;
         }
 
-        public async Task<string>  FetchDataAsync (string url)
+        public async Task<FantasyForm>  FetchDataAsync (string url)
         {
             var response = await _httpClient.GetAsync(url);
 
-            if(response.IsSuccessStatusCode)
-            {
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                return jsonResponse;
-            }
+            response.EnsureSuccessStatusCode();
 
-            throw new HttpRequestException("Failed to fetch data from Fantasy API");
+            var json = await response.Content.ReadAsStringAsync();
+            
+            var apiData = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+
+            var fantasyForm = new FantasyForm
+            {
+                playerJsonForms = JsonConvert.DeserializeObject<List<PlayerJsonForm>>(apiData["PlayerJsonForms"].ToString()),
+                teamsJsonForms = JsonConvert.DeserializeObject<List<TeamsJsonForm>>(apiData["TeamsJsonForms"].ToString())
+            };
+
+            return fantasyForm;
+            
+
+            
         }
     }
 }
