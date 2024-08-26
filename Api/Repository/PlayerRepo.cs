@@ -11,8 +11,8 @@ namespace Api.Repository
     {   
 
         private readonly AppDbContext _context;
-        private readonly ILogger<FetchingService> _logger;
-        public PlayerRepo(AppDbContext context, ILogger<FetchingService> logger)
+        private readonly ILogger<PlayerRepo> _logger;
+        public PlayerRepo(AppDbContext context, ILogger<PlayerRepo> logger)
         {
             _context = context;
             _logger = logger;

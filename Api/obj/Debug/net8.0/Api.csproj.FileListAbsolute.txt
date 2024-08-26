@@ -143,3 +143,8 @@ E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Formatting.Compact.dll
 E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Sinks.Async.dll
 E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Sinks.File.dll
 E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Sinks.RollingFile.dll
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Sinks.Console.dll
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.AspNetCore.dll
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Extensions.Hosting.dll
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Settings.Configuration.dll
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Sinks.Debug.dll
