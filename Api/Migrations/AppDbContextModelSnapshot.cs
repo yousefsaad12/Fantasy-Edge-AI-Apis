@@ -22,25 +22,6 @@ namespace Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Api.Models.GameWeeksModel.Gameweeks", b =>
-                {
-                    b.Property<int>("GameweekId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameweekId"));
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("GameweekId");
-
-                    b.ToTable("Gameweeks", (string)null);
-                });
-
             modelBuilder.Entity("Api.Models.PlayerModels.ElementTypes", b =>
                 {
                     b.Property<int>("ElementTypeId")
@@ -141,9 +122,6 @@ namespace Api.Migrations
                     b.Property<int>("EventPoints")
                         .HasColumnType("int");
 
-                    b.Property<int>("GameweekId")
-                        .HasColumnType("int");
-
                     b.Property<int>("GoalsConceded")
                         .HasColumnType("int");
 
@@ -178,9 +156,6 @@ namespace Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("PlayerPerformanceId");
-
-                    b.HasIndex("GameweekId")
-                        .HasDatabaseName("idx_player_performance_gameweek");
 
                     b.HasIndex("PlayerId")
                         .HasDatabaseName("idx_player_performance_player");
@@ -226,9 +201,6 @@ namespace Api.Migrations
                     b.Property<decimal>("ExpectedGoalsPer90")
                         .HasColumnType("decimal(5, 2)");
 
-                    b.Property<int>("GameweekId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("GoalsConcededPer90")
                         .HasColumnType("decimal(5, 2)");
 
@@ -249,9 +221,6 @@ namespace Api.Migrations
 
                     b.HasKey("PlayerStatisticsId");
 
-                    b.HasIndex("GameweekId")
-                        .HasDatabaseName("idx_player_statistics_gameweek");
-
                     b.HasIndex("PlayerId")
                         .HasDatabaseName("idx_player_statistics_player");
 
@@ -265,9 +234,6 @@ namespace Api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlayerTransferId"));
-
-                    b.Property<int>("GameweekId")
-                        .HasColumnType("int");
 
                     b.Property<int>("PlayerId")
                         .HasColumnType("int");
@@ -285,9 +251,6 @@ namespace Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("PlayerTransferId");
-
-                    b.HasIndex("GameweekId")
-                        .HasDatabaseName("idx_player_transfer_gameweek");
 
                     b.HasIndex("PlayerId")
                         .HasDatabaseName("idx_player_transfer_player");
@@ -309,9 +272,6 @@ namespace Api.Migrations
                     b.Property<int>("CostChangeStart")
                         .HasColumnType("int");
 
-                    b.Property<int>("GameweekId")
-                        .HasColumnType("int");
-
                     b.Property<int>("NowCost")
                         .HasColumnType("int");
 
@@ -328,9 +288,6 @@ namespace Api.Migrations
                         .HasColumnType("decimal(5, 2)");
 
                     b.HasKey("PlayerValueId");
-
-                    b.HasIndex("GameweekId")
-                        .HasDatabaseName("idx_player_value_gameweek");
 
                     b.HasIndex("PlayerId")
                         .HasDatabaseName("idx_player_value_player");
@@ -381,9 +338,6 @@ namespace Api.Migrations
                     b.Property<int>("Draw")
                         .HasColumnType("int");
 
-                    b.Property<int>("GameweekId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Loss")
                         .HasColumnType("int");
 
@@ -403,9 +357,6 @@ namespace Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("TeamPerformanceId");
-
-                    b.HasIndex("GameweekId")
-                        .HasDatabaseName("idx_team_performance_gameweek");
 
                     b.HasIndex("TeamId")
                         .HasDatabaseName("idx_team_performance_team");
@@ -434,110 +385,57 @@ namespace Api.Migrations
 
             modelBuilder.Entity("Api.Models.PlayerModels.PlayerPerformance", b =>
                 {
-                    b.HasOne("Api.Models.GameWeeksModel.Gameweeks", "Gameweeks")
-                        .WithMany("PlayerPerformances")
-                        .HasForeignKey("GameweekId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Api.Models.PlayerModels.Player", "player")
                         .WithMany("PlayerPerformances")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Gameweeks");
 
                     b.Navigation("player");
                 });
 
             modelBuilder.Entity("Api.Models.PlayerModels.PlayerStatistics", b =>
                 {
-                    b.HasOne("Api.Models.GameWeeksModel.Gameweeks", "Gameweeks")
-                        .WithMany("PlayerStatistics")
-                        .HasForeignKey("GameweekId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Api.Models.PlayerModels.Player", "player")
                         .WithMany("PlayerStatistics")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Gameweeks");
 
                     b.Navigation("player");
                 });
 
             modelBuilder.Entity("Api.Models.PlayerModels.PlayerTransfer", b =>
                 {
-                    b.HasOne("Api.Models.GameWeeksModel.Gameweeks", "Gameweeks")
-                        .WithMany("PlayerTransfer")
-                        .HasForeignKey("GameweekId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Api.Models.PlayerModels.Player", "player")
                         .WithMany("PlayerTransfers")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Gameweeks");
-
                     b.Navigation("player");
                 });
 
             modelBuilder.Entity("Api.Models.PlayerModels.PlayerValue", b =>
                 {
-                    b.HasOne("Api.Models.GameWeeksModel.Gameweeks", "Gameweeks")
-                        .WithMany("PlayerValue")
-                        .HasForeignKey("GameweekId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Api.Models.PlayerModels.Player", "player")
                         .WithMany("PlayerValues")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Gameweeks");
-
                     b.Navigation("player");
                 });
 
             modelBuilder.Entity("Api.Models.TeamModels.TeamPerformance", b =>
                 {
-                    b.HasOne("Api.Models.GameWeeksModel.Gameweeks", "Gameweeks")
-                        .WithMany("TeamPerformances")
-                        .HasForeignKey("GameweekId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Api.Models.TeamModels.Team", "team")
                         .WithMany("TeamPerformances")
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Gameweeks");
-
                     b.Navigation("team");
-                });
-
-            modelBuilder.Entity("Api.Models.GameWeeksModel.Gameweeks", b =>
-                {
-                    b.Navigation("PlayerPerformances");
-
-                    b.Navigation("PlayerStatistics");
-
-                    b.Navigation("PlayerTransfer");
-
-                    b.Navigation("PlayerValue");
-
-                    b.Navigation("TeamPerformances");
                 });
 
             modelBuilder.Entity("Api.Models.PlayerModels.ElementTypes", b =>

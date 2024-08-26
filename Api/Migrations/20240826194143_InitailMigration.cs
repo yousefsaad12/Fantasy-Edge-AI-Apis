@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Api.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitailMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,20 +22,6 @@ namespace Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ElementTypes", x => x.ElementTypeId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Gameweeks",
-                columns: table => new
-                {
-                    GameweekId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StartDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Gameweeks", x => x.GameweekId);
                 });
 
             migrationBuilder.CreateTable(
@@ -102,18 +88,11 @@ namespace Api.Migrations
                     Draw = table.Column<int>(type: "int", nullable: false),
                     Points = table.Column<int>(type: "int", nullable: false),
                     Position = table.Column<int>(type: "int", nullable: false),
-                    GameweekId = table.Column<int>(type: "int", nullable: false),
                     TeamId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TeamPerformance", x => x.TeamPerformanceId);
-                    table.ForeignKey(
-                        name: "FK_TeamPerformance_Gameweeks_GameweekId",
-                        column: x => x.GameweekId,
-                        principalTable: "Gameweeks",
-                        principalColumn: "GameweekId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TeamPerformance_Teams_TeamId",
                         column: x => x.TeamId,
@@ -144,18 +123,11 @@ namespace Api.Migrations
                     Bonus = table.Column<int>(type: "int", nullable: false),
                     BonusPointsSystem = table.Column<int>(type: "int", nullable: false),
                     DreamTeamCount = table.Column<int>(type: "int", nullable: false),
-                    PlayerId = table.Column<int>(type: "int", nullable: false),
-                    GameweekId = table.Column<int>(type: "int", nullable: false)
+                    PlayerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PlayersPerformance", x => x.PlayerPerformanceId);
-                    table.ForeignKey(
-                        name: "FK_PlayersPerformance_Gameweeks_GameweekId",
-                        column: x => x.GameweekId,
-                        principalTable: "Gameweeks",
-                        principalColumn: "GameweekId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PlayersPerformance_Players_PlayerId",
                         column: x => x.PlayerId,
@@ -185,18 +157,11 @@ namespace Api.Migrations
                     GoalsConcededPer90 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     StartsPer90 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     CleanSheetsPer90 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    PlayerId = table.Column<int>(type: "int", nullable: false),
-                    GameweekId = table.Column<int>(type: "int", nullable: false)
+                    PlayerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PlayersStatistics", x => x.PlayerStatisticsId);
-                    table.ForeignKey(
-                        name: "FK_PlayersStatistics_Gameweeks_GameweekId",
-                        column: x => x.GameweekId,
-                        principalTable: "Gameweeks",
-                        principalColumn: "GameweekId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PlayersStatistics_Players_PlayerId",
                         column: x => x.PlayerId,
@@ -215,18 +180,11 @@ namespace Api.Migrations
                     TransfersInEvent = table.Column<int>(type: "int", nullable: false),
                     TransfersOut = table.Column<int>(type: "int", nullable: false),
                     TransfersOutEvent = table.Column<int>(type: "int", nullable: false),
-                    GameweekId = table.Column<int>(type: "int", nullable: false),
                     PlayerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PlayersTransfer", x => x.PlayerTransferId);
-                    table.ForeignKey(
-                        name: "FK_PlayersTransfer_Gameweeks_GameweekId",
-                        column: x => x.GameweekId,
-                        principalTable: "Gameweeks",
-                        principalColumn: "GameweekId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PlayersTransfer_Players_PlayerId",
                         column: x => x.PlayerId,
@@ -247,18 +205,11 @@ namespace Api.Migrations
                     SelectedByPercent = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     ValueForm = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     ValueSeason = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    GameweekId = table.Column<int>(type: "int", nullable: false),
                     PlayerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PlayersValues", x => x.PlayerValueId);
-                    table.ForeignKey(
-                        name: "FK_PlayersValues_Gameweeks_GameweekId",
-                        column: x => x.GameweekId,
-                        principalTable: "Gameweeks",
-                        principalColumn: "GameweekId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PlayersValues_Players_PlayerId",
                         column: x => x.PlayerId,
@@ -283,19 +234,9 @@ namespace Api.Migrations
                 column: "TeamId");
 
             migrationBuilder.CreateIndex(
-                name: "idx_player_performance_gameweek",
-                table: "PlayersPerformance",
-                column: "GameweekId");
-
-            migrationBuilder.CreateIndex(
                 name: "idx_player_performance_player",
                 table: "PlayersPerformance",
                 column: "PlayerId");
-
-            migrationBuilder.CreateIndex(
-                name: "idx_player_statistics_gameweek",
-                table: "PlayersStatistics",
-                column: "GameweekId");
 
             migrationBuilder.CreateIndex(
                 name: "idx_player_statistics_player",
@@ -303,29 +244,14 @@ namespace Api.Migrations
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
-                name: "idx_player_transfer_gameweek",
-                table: "PlayersTransfer",
-                column: "GameweekId");
-
-            migrationBuilder.CreateIndex(
                 name: "idx_player_transfer_player",
                 table: "PlayersTransfer",
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
-                name: "idx_player_value_gameweek",
-                table: "PlayersValues",
-                column: "GameweekId");
-
-            migrationBuilder.CreateIndex(
                 name: "idx_player_value_player",
                 table: "PlayersValues",
                 column: "PlayerId");
-
-            migrationBuilder.CreateIndex(
-                name: "idx_team_performance_gameweek",
-                table: "TeamPerformance",
-                column: "GameweekId");
 
             migrationBuilder.CreateIndex(
                 name: "idx_team_performance_team",
@@ -353,9 +279,6 @@ namespace Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Players");
-
-            migrationBuilder.DropTable(
-                name: "Gameweeks");
 
             migrationBuilder.DropTable(
                 name: "ElementTypes");

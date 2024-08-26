@@ -136,3 +136,10 @@ E:\FantasyEdge\Backend\Api\obj\Debug\net8.0\Api.genruntimeconfig.cache
 E:\FantasyEdge\Backend\Api\obj\Debug\net8.0\ref\Api.dll
 E:\FantasyEdge\Backend\Api\obj\Debug\net8.0\Api.sourcelink.json
 E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.dll
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Extensions.Logging.dll
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Extensions.Logging.File.dll
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Formatting.Compact.dll
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Sinks.Async.dll
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Sinks.File.dll
+E:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Serilog.Sinks.RollingFile.dll

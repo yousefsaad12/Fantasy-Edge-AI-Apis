@@ -16,7 +16,6 @@ namespace Api.Data
         public DbSet<PlayerTransfer> PlayerTransfer { get; set; }
         public DbSet<PlayerValue> PlayerValue { get; set; }
         public DbSet<ElementTypes> ElementTypes { get; set; }
-        public DbSet<Gameweeks> Gameweeks { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<TeamPerformance> TeamPerformance { get; set; }
 
@@ -122,10 +121,7 @@ namespace Api.Data
                       .HasForeignKey(e => e.PlayerId)
                       .IsRequired();
 
-                entity.HasOne(e => e.Gameweeks)
-                      .WithMany(gw => gw.PlayerPerformances)
-                      .HasForeignKey(e => e.GameweekId)
-                      .IsRequired();
+                
             });
 
             #endregion
@@ -176,10 +172,7 @@ namespace Api.Data
                       .HasForeignKey(e => e.PlayerId)
                       .IsRequired();
 
-                entity.HasOne(e => e.Gameweeks)
-                      .WithMany(gw => gw.PlayerStatistics)
-                      .HasForeignKey(e => e.GameweekId)
-                      .IsRequired();
+                
                 
             });
 
@@ -204,10 +197,7 @@ namespace Api.Data
                       .HasForeignKey(e => e.PlayerId)
                       .IsRequired();
 
-                entity.HasOne(e => e.Gameweeks)
-                      .WithMany(gw => gw.PlayerTransfer)
-                      .HasForeignKey(e => e.GameweekId)
-                      .IsRequired();
+                
 
             });
 
@@ -240,10 +230,6 @@ namespace Api.Data
                       .IsRequired();
                       
 
-                entity.HasOne(e => e.Gameweeks)
-                      .WithMany(gw => gw.PlayerValue)
-                      .HasForeignKey(e => e.GameweekId)
-                      .IsRequired();
 
             });
 
@@ -323,13 +309,6 @@ namespace Api.Data
                 entity.Property(e => e.Position).IsRequired().HasColumnType("int");
                 
 
-
-
-                entity.HasOne(e => e.Gameweeks)
-                      .WithMany(gw => gw.TeamPerformances)
-                      .HasForeignKey(e => e.GameweekId)
-                      .IsRequired();
-
                 entity.HasOne(e => e.team)
                       .WithMany(t => t.TeamPerformances)
                       .HasForeignKey(e => e.TeamId)
@@ -341,58 +320,11 @@ namespace Api.Data
 
             // Gameweeks entity
 
-             #region 
-             modelBuilder.Entity<Gameweeks>(entity => {
-
-                entity.ToTable("Gameweeks");
-                entity.HasKey(e => e.GameweekId);
-
-                entity.Property(e => e.StartDate).IsRequired().HasColumnType("datetime");
-                entity.Property(e => e.EndDate).IsRequired().HasColumnType("datetime");
-
-
-                entity.HasMany(e => e.PlayerPerformances)
-                      .WithOne(pl => pl.Gameweeks)
-                      .HasForeignKey(pl => pl.GameweekId)
-                      .IsRequired();
-
-                
-                entity.HasMany(e => e.TeamPerformances)
-                      .WithOne(pl => pl.Gameweeks)
-                      .HasForeignKey(pl => pl.GameweekId)
-                      .IsRequired();
-
-                
-                entity.HasMany(e => e.PlayerStatistics)
-                      .WithOne(pl => pl.Gameweeks)
-                      .HasForeignKey(pl => pl.GameweekId)
-                      .IsRequired();
-
-                 
-                entity.HasMany(e => e.PlayerTransfer)
-                      .WithOne(pl => pl.Gameweeks)
-                      .HasForeignKey(pl => pl.GameweekId)
-                      .IsRequired();
-
-                 
-                entity.HasMany(e => e.PlayerValue)
-                      .WithOne(pl => pl.Gameweeks)
-                      .HasForeignKey(pl => pl.GameweekId)
-                      .IsRequired();
-
-            });
-
-            #endregion
-           
-
 
             modelBuilder.Entity<Player>()
                 .HasIndex(p => new { p.FirstName, p.SecondName })
                 .HasDatabaseName("idx_player_firstname_secondname");
 
-            modelBuilder.Entity<PlayerPerformance>()
-            .HasIndex(pp => pp.GameweekId)
-            .HasDatabaseName("idx_player_performance_gameweek");
 
             modelBuilder.Entity<PlayerPerformance>()
             .HasIndex(pp => pp.PlayerId)
@@ -402,30 +334,18 @@ namespace Api.Data
             .HasIndex(pv => pv.PlayerId)
             .HasDatabaseName("idx_player_value_player");
 
-            modelBuilder.Entity<PlayerValue>()
-            .HasIndex(pv => pv.GameweekId)
-            .HasDatabaseName("idx_player_value_gameweek");
 
             modelBuilder.Entity<PlayerTransfer>()
             .HasIndex(pt => pt.PlayerId)
             .HasDatabaseName("idx_player_transfer_player");
 
-            modelBuilder.Entity<PlayerTransfer>()
-            .HasIndex(pt => pt.GameweekId)
-            .HasDatabaseName("idx_player_transfer_gameweek");
+           
 
             modelBuilder.Entity<PlayerStatistics>()
             .HasIndex(ps => ps.PlayerId)
             .HasDatabaseName("idx_player_statistics_player");
 
-            modelBuilder.Entity<PlayerStatistics>()
-            .HasIndex(ps => ps.GameweekId)
-            .HasDatabaseName("idx_player_statistics_gameweek");
-
-
-            modelBuilder.Entity<TeamPerformance>()
-            .HasIndex(tp => tp.GameweekId)
-            .HasDatabaseName("idx_team_performance_gameweek");
+          
 
             modelBuilder.Entity<TeamPerformance>()
             .HasIndex(tp => tp.TeamId)

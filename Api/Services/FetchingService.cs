@@ -14,7 +14,7 @@ namespace Api.Services
             _logger = logger;
         }
 
-        public async Task<FantasyForm> FetchDataAsync(string url)
+        public async Task<PlayerJsonForm> FetchDataAsync(string url)
         {
             try
             {
@@ -41,7 +41,10 @@ namespace Api.Services
                     teamsJsonForms = JsonConvert.DeserializeObject<List<TeamsJsonForm>>(apiData["teams"].ToString())
                 };
 
-                return fantasyForm;
+                PlayerJsonForm ? playerJson =  fantasyForm.playerJsonForms.FirstOrDefault(p => p.first_name == "Mohamed" && p.second_name == "Salah");
+                
+
+                return playerJson;
             }
             catch (HttpRequestException httpEx)
             {
