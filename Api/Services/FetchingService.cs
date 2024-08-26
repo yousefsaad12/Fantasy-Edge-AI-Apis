@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
 
 namespace Api.Services
 {
@@ -14,7 +13,7 @@ namespace Api.Services
             _logger = logger;
         }
 
-        public async Task<PlayerJsonForm> FetchDataAsync(string url)
+        public async Task<FantasyForm> FetchDataAsync(string url)
         {
             try
             {
@@ -41,10 +40,8 @@ namespace Api.Services
                     teamsJsonForms = JsonConvert.DeserializeObject<List<TeamsJsonForm>>(apiData["teams"].ToString())
                 };
 
-                PlayerJsonForm ? playerJson =  fantasyForm.playerJsonForms.FirstOrDefault(p => p.first_name == "Mohamed" && p.second_name == "Salah");
-                
 
-                return playerJson;
+                return fantasyForm;
             }
             catch (HttpRequestException httpEx)
             {
