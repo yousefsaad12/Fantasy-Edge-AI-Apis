@@ -10,3 +10,4 @@ global using Api.Interfaces;
 global using Api.Services;
 global using Api.Models.FetchingModels;
 global using Serilog;
+global using Api.Repository;
