@@ -10,9 +10,11 @@ namespace Api.Repository
         {
             _context = context;
         }
-        public Task<bool> CreatePlayer(Player player)
+        public async Task<bool> Create(T entity)
         {
-            throw new NotImplementedException();
+           await _context.Set<T>().AddAsync(entity);
+
+           return await _context.SaveChangesAsync() > 0;
         }
 
 
@@ -36,7 +38,7 @@ namespace Api.Repository
             return await query.ToListAsync();
         } 
 
-        public Task<bool> UpdataPlayer(Player player, string FirstName, string SecondName)
+        public Task<bool> Update(Player player, string FirstName, string SecondName)
         {
             throw new NotImplementedException();
         }

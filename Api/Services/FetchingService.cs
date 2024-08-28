@@ -6,11 +6,12 @@ namespace Api.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<FetchingService> _logger;
-
-        public FetchingService(HttpClient httpClient, ILogger<FetchingService> logger)
+        private readonly IPlayerServices _playerServices;
+        public FetchingService(HttpClient httpClient, ILogger<FetchingService> logger, IPlayerServices playerServices)
         {
             _httpClient = httpClient;
             _logger = logger;
+            _playerServices = playerServices;
         }
 
         public async Task<FantasyForm> FetchDataAsync(string url)
@@ -40,7 +41,7 @@ namespace Api.Services
                     teamsJsonForms = JsonConvert.DeserializeObject<List<TeamsJsonForm>>(apiData["teams"].ToString())
                 };
 
-
+                
                 return fantasyForm;
             }
             catch (HttpRequestException httpEx)

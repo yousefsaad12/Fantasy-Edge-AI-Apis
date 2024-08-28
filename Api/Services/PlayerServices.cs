@@ -16,24 +16,23 @@ namespace Api.Services
         {   
             try{
 
-                if (string.IsNullOrWhiteSpace(player.FirstName) || string.IsNullOrWhiteSpace(player.SecondName))
+                if (string.IsNullOrWhiteSpace(player.FirstName) || string.IsNullOrWhiteSpace(player.SecondName) || string.IsNullOrWhiteSpace(player.Status))
                 {
-                    _logger.LogWarning("Attempted to create a player with invalid names: {FirstName} {SecondName}", player.FirstName, player.SecondName);
+                    _logger.LogWarning("Attempted to create a player with invalid names: {FirstName} {SecondName} {Status}", player.FirstName, player.SecondName, player.Status);
                     throw new ArgumentException("Player names cannot be null or empty.");
                 }
+                
 
                 Player ? isExists = await GetPlayerbyName(player.FirstName, player.SecondName);
 
-                if (isExists != null)
+                if (isExists is not null)
                 {
                     _logger.LogInformation("Player already exists: {FirstName} {SecondName}", player.FirstName, player.SecondName);
                     return false; 
                 }
 
-                await _context.Players.AddAsync(player);
-                _logger.LogInformation("Player added to context: {FirstName} {SecondName}", player.FirstName, player.SecondName);
                 
-                bool isSuccess = await _context.SaveChangesAsync() > 0;
+                bool isSuccess = await _genericRepo.Create(player);
 
                 if (isSuccess) _logger.LogInformation("Player successfully created: {FirstName} {SecondName}", player.FirstName, player.SecondName);
 
@@ -65,11 +64,11 @@ namespace Api.Services
                 Player ? player = await _genericRepo.GetbyName(FirstName, SecondName,
                                                     p => p.PlayerPerformances,
                                                     p => p.PlayerStatistics,
-                                                    p => player.PlayerTransfers,
+                                                    p => p.PlayerTransfers,
                                                     p => p.PlayerValues);
 
 
-                return player == null ? null : player;
+                return player != null ? player : null;
             }
                catch(Exception ex)
             {
