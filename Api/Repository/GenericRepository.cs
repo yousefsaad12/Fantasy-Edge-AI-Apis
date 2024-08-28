@@ -15,15 +15,26 @@ namespace Api.Repository
             throw new NotImplementedException();
         }
 
-        public async Task<T>? GetbyId(int Id)
+
+        public async Task<T>? GetbyName(string FirstName, string LastName, params Expression<Func<T, object>>[] includes)
         {
-            return await _context.Set<T>().FindAsync(Id);
+            IQueryable<T>query = _context.Set<T>();
+
+            foreach(var include in includes)
+                query = query.Include(include);
+
+            return await query.FirstOrDefaultAsync(e => EF.Property<string>(e, "FirstName") == FirstName && EF.Property<string>(e, "SecondName") == LastName);
         }
 
-        public Task<T>? GetbyName(string FirstNamem, string LastName)
+         public async Task<IEnumerable<T>>? GetAll(params Expression<Func<T, object>>[] includes)
         {
-            throw new NotImplementedException();
-        }
+            IQueryable<T>query = _context.Set<T>();
+
+            foreach(var include in includes)
+                query = query.Include(include);
+
+            return await query.ToListAsync();
+        } 
 
         public Task<bool> UpdataPlayer(Player player, string FirstName, string SecondName)
         {

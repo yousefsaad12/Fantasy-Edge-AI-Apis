@@ -1,15 +1,15 @@
 
 
-namespace Api.Repository
+namespace Api.Services
 {
-    public class PlayerRepo : IPlayerRepo
+    public class PlayerServices : IPlayerServices
     {   
 
-        private readonly AppDbContext _context;
-        private readonly ILogger<PlayerRepo> _logger;
-        public PlayerRepo(AppDbContext context, ILogger<PlayerRepo> logger)
+        private readonly IGenericRepository<Player> _genericRepo;
+        private readonly ILogger<PlayerServices> _logger;
+        public PlayerServices(IGenericRepository<Player> genericRepo, ILogger<PlayerServices> logger)
         {
-            _context = context;
+            _genericRepo = genericRepo;
             _logger = logger;
         }
         public async Task<bool> CreatePlayer(Player player)
@@ -51,36 +51,23 @@ namespace Api.Repository
             }
         }
 
-        public async Task<Player>? GetPlayerbyId(int Id)
-        {   
-            try{
-                Player ? player = await _context.Players
-                                 .Include(p => p.PlayerPerformances)
-                                 .Include(p => p.PlayerStatistics)
-                                 .Include(p => p.PlayerTransfers)
-                                 .Include(p => p.PlayerValues)
-                                 .FirstOrDefaultAsync(p => p.PlayerId == Id);
-
-                return player == null ? null : player;
-            }
-
-            catch(Exception ex)
-            {
-                throw;
-            }
-            
-        }
 
         public async Task<Player>? GetPlayerbyName(string FirstName, string SecondName)
         {
             try{
-                
-                Player ? player = await _context.Players
-                                 .Include(p => p.PlayerPerformances)
-                                 .Include(p => p.PlayerStatistics)
-                                 .Include(p => p.PlayerTransfers)
-                                 .Include(p => p.PlayerValues)
-                                 .FirstOrDefaultAsync(p => p.FirstName == FirstName && p.SecondName == SecondName);
+                 
+                 if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(SecondName))
+                {
+                    _logger.LogWarning("Attempted to create a player with invalid names: {FirstName} {SecondName}", FirstName, SecondName);
+                    throw new ArgumentException("Player names cannot be null or empty.");
+                }
+
+                Player ? player = await _genericRepo.GetbyName(FirstName, SecondName,
+                                                    p => p.PlayerPerformances,
+                                                    p => p.PlayerStatistics,
+                                                    p => player.PlayerTransfers,
+                                                    p => p.PlayerValues);
+
 
                 return player == null ? null : player;
             }
