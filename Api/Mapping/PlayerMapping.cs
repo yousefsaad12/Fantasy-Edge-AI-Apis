@@ -22,8 +22,8 @@ namespace Api.Mapping
             News = playerJsonForm.news,
             NewsAdded = playerJsonForm.news_added,
             ChancePlayingNextRound = playerJsonForm.chance_of_playing_next_round,
-            ChancePlayingThisRound = playerJsonForm.chance_of_playing_this_round,
             ElementTypeId = playerJsonForm.element_type,
+            ChancePlayingThisRound = playerJsonForm.chance_of_playing_this_round,
             TeamId = playerJsonForm.team,
 
             // Initialize navigation properties to empty collections

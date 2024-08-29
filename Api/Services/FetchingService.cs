@@ -1,3 +1,4 @@
+using Api.Mapping;
 using Newtonsoft.Json;
 
 namespace Api.Services
@@ -41,7 +42,7 @@ namespace Api.Services
                     teamsJsonForms = JsonConvert.DeserializeObject<List<TeamsJsonForm>>(apiData["teams"].ToString())
                 };
 
-                
+                await _playerServices.CreatePlayer(fantasyForm.playerJsonForms.First().MapToPlayer());
                 return fantasyForm;
             }
             catch (HttpRequestException httpEx)

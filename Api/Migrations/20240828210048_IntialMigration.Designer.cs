@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240826194143_InitailMigration")]
-    partial class InitailMigration
+    [Migration("20240828210048_IntialMigration")]
+    partial class IntialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,10 +45,7 @@ namespace Api.Migrations
             modelBuilder.Entity("Api.Models.PlayerModels.Player", b =>
                 {
                     b.Property<int>("PlayerId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlayerId"));
 
                     b.Property<int?>("ChancePlayingNextRound")
                         .HasColumnType("int");

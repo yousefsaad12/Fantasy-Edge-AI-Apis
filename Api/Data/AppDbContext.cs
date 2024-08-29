@@ -31,6 +31,9 @@ namespace Api.Data
                 entity.ToTable("Players");
                 entity.HasKey(e => e.PlayerId);
 
+                entity.Property(p => p.PlayerId)
+                      .ValueGeneratedNever(); 
+
                 entity.Property(e => e.FirstName).IsRequired().HasColumnType("nvarchar(100)");
 
                 entity.Property(e => e.SecondName).IsRequired().HasColumnType("nvarchar(100)");

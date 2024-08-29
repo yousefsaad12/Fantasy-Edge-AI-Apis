@@ -7,6 +7,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IFetchingService, FetchingService>();
+builder.Services.AddScoped<IPlayerServices, PlayerServices>();
 builder.Services.AddTransient(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 
 builder.Services.AddDbContext<AppDbContext>(options => {

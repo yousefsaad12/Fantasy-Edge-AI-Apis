@@ -1,9 +1,11 @@
+
 using Api.Models.TeamModels;
 
 namespace Api.Models.PlayerModels
 {
     public class Player
     {   
+        [Key]
         public int PlayerId { get; set; }
         public string FirstName { get; set; }
         public string SecondName { get; set; }

@@ -42,10 +42,7 @@ namespace Api.Migrations
             modelBuilder.Entity("Api.Models.PlayerModels.Player", b =>
                 {
                     b.Property<int>("PlayerId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlayerId"));
 
                     b.Property<int?>("ChancePlayingNextRound")
                         .HasColumnType("int");
