@@ -11,6 +11,6 @@ namespace Api.Interfaces
         
         public Task<Player> ? GetPlayerbyName(string FirstName, string LastName);
         public Task<bool> CreatePlayer(Player player);
-        public Task<bool> UpdataPlayer(Player player, string FirstName, string SecondName);
+        public  Task InsertPlayersAndRelatedEntitiesAsync(IEnumerable<PlayerJsonForm> playerJsonForms);
     }
 }

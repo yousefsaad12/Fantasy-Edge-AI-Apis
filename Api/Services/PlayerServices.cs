@@ -1,5 +1,7 @@
 
 
+
+
 namespace Api.Services
 {
     public class PlayerServices : IPlayerServices
@@ -12,6 +14,8 @@ namespace Api.Services
             _genericRepo = genericRepo;
             _logger = logger;
         }
+
+
         public async Task<bool> CreatePlayer(Player player)
         {   
             try{
@@ -76,49 +80,59 @@ namespace Api.Services
             }
         }
 
-        public async Task<bool> UpdataPlayer(Player player, string FirstName, string SecondName)
+    
+
+
+        public async Task InsertPlayersAndRelatedEntitiesAsync(IEnumerable<PlayerJsonForm> playerJsonForms)
         {
-            try
+            List<Player> players = playerJsonForms.Select(p => p.MapToPlayer()).ToList();
+            IEnumerable<PlayerPerformance> playerPerformances = playerJsonForms.Select(p => p.MapToPlayerPerformance()).ToImmutableList();
+            IEnumerable<PlayerStatistics> playerStatistics = playerJsonForms.Select(p => p.MapPlayerStatistics()).ToImmutableList();
+            IEnumerable<PlayerTransfer> playerTransfer = playerJsonForms.Select(p => p.MapPlayerTransfer()).ToImmutableList();
+            IEnumerable<PlayerValue> playerValue = playerJsonForms.Select(p => p.MapPlayerValue()).ToImmutableList();
+
+            const int batchSize = 100;
+            var playerList = players.ToList();
+
+            for (int i = 0; i < playerList.Count; i += batchSize)
             {
-                // Check if the player exists
-                var existingPlayer = await _genericRepo.GetbyName(FirstName, SecondName);
-               
+                var batch = playerList.Skip(i).Take(batchSize).ToList();
 
-                // Update basic player information
-                existingPlayer.FirstName = player.FirstName;
-                existingPlayer.SecondName = player.SecondName;
-                existingPlayer.WebName = player.WebName;
-                existingPlayer.Status = player.Status;
-                existingPlayer.SquadNumber = player.SquadNumber;
-                existingPlayer.News = player.News;
-                existingPlayer.NewsAdded = player.NewsAdded;
-                existingPlayer.ChancePlayingNextRound = player.ChancePlayingNextRound;
-                existingPlayer.ChancePlayingThisRound = player.ChancePlayingThisRound;
-                existingPlayer.ElementTypeId = player.ElementTypeId;
-                existingPlayer.TeamId = player.TeamId;
+                foreach (var player in batch)
+                {   
 
-                // Update related entities (Performance, Value, Statistics, Transfers)
-                // Ensure you handle these updates in a way that suits your data relationships and logic
+                    Player existingPlayer = await GetPlayerbyName(player.FirstName, player.SecondName);
+                    
+                    var pp = playerPerformances.FirstOrDefault(p => p.PlayerId == player.PlayerId);
+                    var ps = playerStatistics.FirstOrDefault(p => p.PlayerId == player.PlayerId);
+                    var pt = playerTransfer.FirstOrDefault(p => p.PlayerId == player.PlayerId);
+                    var pv = playerValue.FirstOrDefault(p => p.PlayerId == player.PlayerId);
 
-                UpdatePlayerPerformance(existingPlayer, player.PlayerPerformances);
-                UpdatePlayerValue(existingPlayer, player.PlayerValues);
-                UpdatePlayerStatistics(existingPlayer, player.PlayerStatistics);
-                UpdatePlayerTransfers(existingPlayer, player.PlayerTransfers);
+                    if(existingPlayer is null)
+                    {
 
-                // Save changes
-                bool isSuccess = await _genericRepo.Update(existingPlayer);
+                        
+                        player.PlayerPerformances.Add(pp);
+                        player.PlayerStatistics.Add(ps);
+                        player.PlayerTransfers.Add(pt);
+                        player.PlayerValues.Add(pv);
 
-                if (isSuccess) 
-                    _logger.LogInformation("Player successfully updated: {FirstName} {SecondName}", player.FirstName, player.SecondName);
-                else 
-                    _logger.LogWarning("Failed to update player: {FirstName} {SecondName}", player.FirstName, player.SecondName);
+                        // Insert the new player into the database
+                        await _genericRepo.Create(player);
+                    }
+                   
+                }
 
-                return isSuccess;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while updating player: {PlayerId}", player.PlayerId);
-                throw;
+                // Save the changes for the current batch
+                try
+                {
+                    _logger.LogInformation($"Batch {i / batchSize + 1} of players inserted successfully.");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"An error occurred during batch {i / batchSize + 1} insertion.");
+                    throw;
+                }
             }
         }
     }

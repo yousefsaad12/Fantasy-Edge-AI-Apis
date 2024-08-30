@@ -12,3 +12,5 @@ global using Api.Models.FetchingModels;
 global using Serilog;
 global using Api.Repository;
 global using System.ComponentModel.DataAnnotations;
+global using System.Collections.Immutable;
+global using Api.Mapping;
