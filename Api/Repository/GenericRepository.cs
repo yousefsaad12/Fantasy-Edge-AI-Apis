@@ -1,12 +1,14 @@
 
 
+using EFCore.BulkExtensions;
+
 namespace Api.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {   
         protected AppDbContext _context;
-
-        public GenericRepository(AppDbContext context)
+        private readonly ILogger<GenericRepository<T>> _logger;
+        public GenericRepository(AppDbContext context, ILogger<GenericRepository<T>> logger)
         {
             _context = context;
         }
@@ -29,18 +31,57 @@ namespace Api.Repository
         }
 
          public async Task<IEnumerable<T>>? GetAll(params Expression<Func<T, object>>[] includes)
-        {
-            IQueryable<T>query = _context.Set<T>();
+        {   
+            try
+            {
+                IQueryable<T>query = _context.Set<T>();
 
-            foreach(var include in includes)
-                query = query.Include(include);
+                foreach(var include in includes)
+                    query = query.Include(include);
 
-            return await query.ToListAsync();
+                return await query.ToListAsync();
+            }
+
+            catch (Exception ex)
+            {   
+                _logger.LogError(ex, "An error occurred while retrieving data of type {EntityType}", typeof(T).Name);
+                return null;
+            }
         } 
 
-        public Task<bool> Update(Player player, string FirstName, string SecondName)
+        public async Task<bool> UpdateOne(T entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Set<T>().Attach(entity);
+                _context.Entry(entity).State =  EntityState.Modified;
+
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating entity of type {EntityType}", typeof(T).Name);
+                return false;
+            }
         }
+
+         public async Task<bool> BulkUpdateByForeignKeyAsync(IEnumerable<T> entities, Expression<Func<T, object>> foreignKeyExpression)
+    {
+        try
+        {
+            await _context.BulkUpdateAsync(entities, options =>
+            {
+                options.IncludeGraph = false; // or true, based on your need
+                options.UpdateBy = foreignKeyExpression; // Use the foreign key expression for update
+            });
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred during bulk update.");
+            return false;
+        }
+    }
+
     }
 }

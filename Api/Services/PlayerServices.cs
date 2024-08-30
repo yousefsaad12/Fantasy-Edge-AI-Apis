@@ -76,9 +76,50 @@ namespace Api.Services
             }
         }
 
-        public Task<bool> UpdataPlayer(Player player, string FirstName, string SecondName)
+        public async Task<bool> UpdataPlayer(Player player, string FirstName, string SecondName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // Check if the player exists
+                var existingPlayer = await _genericRepo.GetbyName(FirstName, SecondName);
+               
+
+                // Update basic player information
+                existingPlayer.FirstName = player.FirstName;
+                existingPlayer.SecondName = player.SecondName;
+                existingPlayer.WebName = player.WebName;
+                existingPlayer.Status = player.Status;
+                existingPlayer.SquadNumber = player.SquadNumber;
+                existingPlayer.News = player.News;
+                existingPlayer.NewsAdded = player.NewsAdded;
+                existingPlayer.ChancePlayingNextRound = player.ChancePlayingNextRound;
+                existingPlayer.ChancePlayingThisRound = player.ChancePlayingThisRound;
+                existingPlayer.ElementTypeId = player.ElementTypeId;
+                existingPlayer.TeamId = player.TeamId;
+
+                // Update related entities (Performance, Value, Statistics, Transfers)
+                // Ensure you handle these updates in a way that suits your data relationships and logic
+
+                UpdatePlayerPerformance(existingPlayer, player.PlayerPerformances);
+                UpdatePlayerValue(existingPlayer, player.PlayerValues);
+                UpdatePlayerStatistics(existingPlayer, player.PlayerStatistics);
+                UpdatePlayerTransfers(existingPlayer, player.PlayerTransfers);
+
+                // Save changes
+                bool isSuccess = await _genericRepo.Update(existingPlayer);
+
+                if (isSuccess) 
+                    _logger.LogInformation("Player successfully updated: {FirstName} {SecondName}", player.FirstName, player.SecondName);
+                else 
+                    _logger.LogWarning("Failed to update player: {FirstName} {SecondName}", player.FirstName, player.SecondName);
+
+                return isSuccess;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating player: {PlayerId}", player.PlayerId);
+                throw;
+            }
         }
     }
 }
