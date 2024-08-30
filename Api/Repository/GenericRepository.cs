@@ -65,23 +65,5 @@ namespace Api.Repository
             }
         }
 
-         public async Task<bool> BulkUpdateByForeignKeyAsync(IEnumerable<T> entities, Expression<Func<T, object>> foreignKeyExpression)
-    {
-        try
-        {
-            await _context.BulkUpdateAsync(entities, options =>
-            {
-                options.IncludeGraph = false; // or true, based on your need
-                options.UpdateBy = foreignKeyExpression; // Use the foreign key expression for update
-            });
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred during bulk update.");
-            return false;
-        }
-    }
-
     }
 }
