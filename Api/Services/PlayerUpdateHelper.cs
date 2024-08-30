@@ -91,5 +91,53 @@ namespace Api.Services
                 throw;
             }
         }
+
+
+         public static void UpdatePlayerTransfers(PlayerTransfer existingTransfer, PlayerTransfer updatedTransfer)
+        {
+            try
+            {
+                
+                existingTransfer.TransfersIn = updatedTransfer.TransfersIn;
+                existingTransfer.TransfersInEvent = updatedTransfer.TransfersInEvent;
+                existingTransfer.TransfersOut = updatedTransfer.TransfersOut;
+                existingTransfer.TransfersOutEvent = updatedTransfer.TransfersOutEvent;
+
+                
+                if (existingTransfer.PlayerId != updatedTransfer.PlayerId)
+                    existingTransfer.PlayerId = updatedTransfer.PlayerId;
+                
+            }
+            catch (Exception ex)
+            {
+        
+                throw;
+            }
+        }
+
+
+          public static void UpdatePlayerValue(PlayerValue existingValue, PlayerValue updatedValue)
+        {
+            try
+            {
+               
+                existingValue.NowCost = updatedValue.NowCost;
+                existingValue.CostChangeEvent = updatedValue.CostChangeEvent;
+                existingValue.CostChangeStart = updatedValue.CostChangeStart;
+                existingValue.SelectedByPercent = updatedValue.SelectedByPercent;
+                existingValue.ValueForm = updatedValue.ValueForm;
+                existingValue.ValueSeason = updatedValue.ValueSeason;
+
+               
+                if (existingValue.PlayerId != updatedValue.PlayerId)
+                    existingValue.PlayerId = updatedValue.PlayerId;
+                
+            }
+            catch (Exception ex)
+            {
+                
+                throw;
+            }
+        }
     }
 }
