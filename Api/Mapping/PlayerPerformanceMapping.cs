@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Api.Mapping
 {
     public  static class PlayerPerformanceMapping
     {
-        public static PlayerPerformance MapPlayerPerformance(this PlayerJsonForm playerJsonForm)
+        public static PlayerPerformance MapToPlayerPerformance(this PlayerJsonForm playerJsonForm)
         {
             return new PlayerPerformance
             {
