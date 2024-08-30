@@ -1,5 +1,4 @@
 
-using Api.Models.PlayerModels;
 
 namespace Api.Models.TeamModels
 {
