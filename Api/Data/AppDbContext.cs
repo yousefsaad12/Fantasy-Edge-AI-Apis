@@ -266,6 +266,9 @@ namespace Api.Data
                 entity.ToTable("Teams");
                 entity.HasKey(e => e.TeamId);
 
+                entity.Property(p => p.TeamId)
+                      .ValueGeneratedNever(); 
+
                 entity.Property(e => e.TeamName).IsRequired().HasColumnType("nvarchar(150)");
 
                 entity.Property(e => e.ShortName).IsRequired().HasMaxLength(10);
@@ -321,7 +324,6 @@ namespace Api.Data
 
             #endregion
 
-            // Gameweeks entity
 
 
             modelBuilder.Entity<Player>()

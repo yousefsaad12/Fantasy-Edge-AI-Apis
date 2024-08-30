@@ -24,7 +24,7 @@ namespace Api.Mapping
             ChancePlayingNextRound = playerJsonForm.chance_of_playing_next_round,
             ElementTypeId = playerJsonForm.element_type,
             ChancePlayingThisRound = playerJsonForm.chance_of_playing_this_round,
-            TeamId = playerJsonForm.team,
+            TeamId = 1,
 
             // Initialize navigation properties to empty collections
             PlayerPerformances = new List<PlayerPerformance>(),
