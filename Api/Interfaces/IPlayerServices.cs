@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Localization;
+
 
 namespace Api.Interfaces
 {
@@ -12,5 +8,6 @@ namespace Api.Interfaces
         public Task<Player> ? GetPlayerbyName(string FirstName, string LastName);
         public Task<bool> CreatePlayer(Player player);
         public  Task InsertPlayersAndRelatedEntitiesAsync(IEnumerable<PlayerJsonForm> playerJsonForms);
+        public  Task<bool> UpdatePlayer(Player existingPlayer, Player newPlayerData, PlayerPerformance pp, PlayerStatistics ps, PlayerTransfer pt, PlayerValue pv);
     }
 }

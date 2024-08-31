@@ -108,18 +108,21 @@ namespace Api.Services
                     var pt = playerTransfer.FirstOrDefault(p => p.PlayerId == player.PlayerId);
                     var pv = playerValue.FirstOrDefault(p => p.PlayerId == player.PlayerId);
 
+                   
+
                     if(existingPlayer is null)
                     {
 
-                        
                         player.PlayerPerformances.Add(pp);
                         player.PlayerStatistics.Add(ps);
                         player.PlayerTransfers.Add(pt);
                         player.PlayerValues.Add(pv);
-
+                       
                         // Insert the new player into the database
-                        await _genericRepo.Create(player);
+                        await CreatePlayer(player);
                     }
+                    else await UpdatePlayer(existingPlayer, player, pp, ps, pt, pv);
+                    
                    
                 }
 
@@ -135,5 +138,55 @@ namespace Api.Services
                 }
             }
         }
+
+
+        public async Task<bool> UpdatePlayer(Player existingPlayer, Player newPlayerData, PlayerPerformance pp, PlayerStatistics ps, PlayerTransfer pt, PlayerValue pv)
+        {
+            try
+            {
+                // Ensure the new player data has valid names and status
+                if (string.IsNullOrWhiteSpace(newPlayerData.FirstName) || string.IsNullOrWhiteSpace(newPlayerData.SecondName) || string.IsNullOrWhiteSpace(newPlayerData.Status))
+                {
+                    _logger.LogWarning("Attempted to update a player with invalid names: {FirstName} {SecondName} {Status}", newPlayerData.FirstName, newPlayerData.SecondName, newPlayerData.Status);
+                    throw new ArgumentException("Player names cannot be null or empty.");
+                }
+
+                // Check if the existing player is valid
+                if (existingPlayer is null)
+                {
+                    _logger.LogWarning("Existing player is null, update cannot proceed.");
+                    return false;
+                }
+
+                // Use PlayerHelper to update the existing player's properties with the new data
+                await PlayerUpdateHelper.UpdateBasicPlayerProperties(existingPlayer, newPlayerData);
+
+                existingPlayer.PlayerPerformances.Add(pp);
+                existingPlayer.PlayerStatistics.Add(ps);
+                existingPlayer.PlayerTransfers.Add(pt);
+                existingPlayer.PlayerValues.Add(pv);
+
+                // Save the changes to the repository
+                bool isSuccess = await _genericRepo.UpdateOne(existingPlayer);
+
+                if (isSuccess)
+                {
+                    _logger.LogInformation("Player successfully updated: {FirstName} {SecondName}", newPlayerData.FirstName, newPlayerData.SecondName);
+                }
+                else
+                {
+                    _logger.LogWarning("Failed to update player: {FirstName} {SecondName}", newPlayerData.FirstName, newPlayerData.SecondName);
+                }
+
+                return isSuccess;
+            }
+            
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating player: {FirstName} {SecondName}", newPlayerData.FirstName, newPlayerData.SecondName);
+                throw;
+            }
+        }
+
     }
 }
