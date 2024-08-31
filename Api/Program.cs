@@ -8,7 +8,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IFetchingService, FetchingService>();
 builder.Services.AddScoped<IPlayerServices, PlayerServices>();
-builder.Services.AddTransient(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddDbContext<AppDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

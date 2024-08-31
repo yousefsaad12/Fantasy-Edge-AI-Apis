@@ -1,17 +1,13 @@
-
-
-
-
 namespace Api.Services
 {
     public class PlayerServices : IPlayerServices
     {   
 
-        private readonly IGenericRepository<Player> _genericRepo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<PlayerServices> _logger;
-        public PlayerServices(IGenericRepository<Player> genericRepo, ILogger<PlayerServices> logger)
+        public PlayerServices(IUnitOfWork unitOfWork, ILogger<PlayerServices> logger)
         {
-            _genericRepo = genericRepo;
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
@@ -36,7 +32,7 @@ namespace Api.Services
                 }
 
                 
-                bool isSuccess = await _genericRepo.Create(player);
+                bool isSuccess = await _unitOfWork.Players.Create(player);
 
                 if (isSuccess) _logger.LogInformation("Player successfully created: {FirstName} {SecondName}", player.FirstName, player.SecondName);
 
@@ -65,7 +61,7 @@ namespace Api.Services
                     throw new ArgumentException("Player names cannot be null or empty.");
                 }
 
-                Player ? player = await _genericRepo.GetbyName(FirstName, SecondName,
+                Player ? player = await _unitOfWork.Players.GetbyName(FirstName, SecondName,
                                                     p => p.PlayerPerformances,
                                                     p => p.PlayerStatistics,
                                                     p => p.PlayerTransfers,
@@ -93,50 +89,55 @@ namespace Api.Services
 
             const int batchSize = 100;
             var playerList = players.ToList();
+          try{
+             
+             // await _genericRepo.BeginTransactionAsync();
+          
+                for (int i = 0; i < playerList.Count; i += batchSize)
+                {
+                    var batch = playerList.Skip(i).Take(batchSize).ToList();
 
-            for (int i = 0; i < playerList.Count; i += batchSize)
-            {
-                var batch = playerList.Skip(i).Take(batchSize).ToList();
+                    foreach (var player in batch)
+                    {   
 
-                foreach (var player in batch)
-                {   
+                        Player existingPlayer = await GetPlayerbyName(player.FirstName, player.SecondName);
+                        
+                        var pp = playerPerformances.FirstOrDefault(p => p.PlayerId == player.PlayerId);
+                        var ps = playerStatistics.FirstOrDefault(p => p.PlayerId == player.PlayerId);
+                        var pt = playerTransfer.FirstOrDefault(p => p.PlayerId == player.PlayerId);
+                        var pv = playerValue.FirstOrDefault(p => p.PlayerId == player.PlayerId);
 
-                    Player existingPlayer = await GetPlayerbyName(player.FirstName, player.SecondName);
                     
-                    var pp = playerPerformances.FirstOrDefault(p => p.PlayerId == player.PlayerId);
-                    var ps = playerStatistics.FirstOrDefault(p => p.PlayerId == player.PlayerId);
-                    var pt = playerTransfer.FirstOrDefault(p => p.PlayerId == player.PlayerId);
-                    var pv = playerValue.FirstOrDefault(p => p.PlayerId == player.PlayerId);
 
-                   
+                        if(existingPlayer is null)
+                        {
 
-                    if(existingPlayer is null)
-                    {
-
-                        player.PlayerPerformances.Add(pp);
-                        player.PlayerStatistics.Add(ps);
-                        player.PlayerTransfers.Add(pt);
-                        player.PlayerValues.Add(pv);
-                       
-                        // Insert the new player into the database
-                        await CreatePlayer(player);
+                            player.PlayerPerformances.Add(pp);
+                            player.PlayerStatistics.Add(ps);
+                            player.PlayerTransfers.Add(pt);
+                            player.PlayerValues.Add(pv);
+                        
+                            // Insert the new player into the database
+                            await CreatePlayer(player);
+                        }
+                        else await UpdatePlayer(existingPlayer, player, pp, ps, pt, pv);
+                        
+                    
                     }
-                    else await UpdatePlayer(existingPlayer, player, pp, ps, pt, pv);
-                    
-                   
                 }
-
                 // Save the changes for the current batch
-                try
-                {
-                    _logger.LogInformation($"Batch {i / batchSize + 1} of players inserted successfully.");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"An error occurred during batch {i / batchSize + 1} insertion.");
-                    throw;
-                }
+                //await _genericRepo.CommitTransactionAsync();
+                _logger.LogInformation("All players inserted/updated successfully.");
+
             }
+
+            catch (Exception ex)
+            {   
+                //await _genericRepo.RollbackTransactionAsync();
+                _logger.LogError(ex, "An error occurred while inserting/updating players.");
+                throw;
+            }
+            
         }
 
 
@@ -167,7 +168,7 @@ namespace Api.Services
                 existingPlayer.PlayerValues.Add(pv);
 
                 // Save the changes to the repository
-                bool isSuccess = await _genericRepo.UpdateOne(existingPlayer);
+                bool isSuccess =  await _unitOfWork.Players.UpdateOne(existingPlayer);
 
                 if (isSuccess)
                 {

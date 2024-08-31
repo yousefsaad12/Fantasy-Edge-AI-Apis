@@ -12,8 +12,6 @@ namespace Api.Interfaces
         public Task<T> ? GetbyName(string FirstName, string LastName, params Expression<Func<T, object>>[] includes);
         public Task<bool> Create(T entity);
         public Task<bool> UpdateOne(T entity);
-         Task<IDbContextTransaction> BeginTransactionAsync();
-         Task CommitTransactionAsync();
-         Task RollbackTransactionAsync();
+     
     }
 }

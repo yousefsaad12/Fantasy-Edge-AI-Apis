@@ -7,12 +7,12 @@ namespace Api.Repository
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {   
         protected AppDbContext _context;
-        private IDbContextTransaction _transaction;
     
-        public GenericRepository(AppDbContext context, IDbContextTransaction transaction)
+    
+        public GenericRepository(AppDbContext context)
         {
             _context = context;
-            _transaction = transaction;
+            
         }
         public async Task<bool> Create(T entity)
         {
@@ -67,30 +67,5 @@ namespace Api.Repository
             }
         }
 
-        public async Task<IDbContextTransaction> BeginTransactionAsync()
-        {
-            _transaction = await _context.Database.BeginTransactionAsync();
-            return  _transaction;
-        }
-
-        public async Task CommitTransactionAsync()
-        {
-             if (_transaction != null)
-            {
-                await _transaction.CommitAsync();
-                await _transaction.DisposeAsync();
-                _transaction = null;
-            }
-        }
-
-        public async Task RollbackTransactionAsync()
-        {
-            if (_transaction != null)
-            {
-                await _transaction.RollbackAsync();
-                await _transaction.DisposeAsync();
-                _transaction = null;
-            }
-        }
     }
 }
