@@ -1,16 +1,18 @@
 
 
-using EFCore.BulkExtensions;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Api.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {   
         protected AppDbContext _context;
-        private readonly ILogger<GenericRepository<T>> _logger;
-        public GenericRepository(AppDbContext context, ILogger<GenericRepository<T>> logger)
+        private IDbContextTransaction _transaction;
+    
+        public GenericRepository(AppDbContext context, IDbContextTransaction transaction)
         {
             _context = context;
+            _transaction = transaction;
         }
         public async Task<bool> Create(T entity)
         {
@@ -44,7 +46,7 @@ namespace Api.Repository
 
             catch (Exception ex)
             {   
-                _logger.LogError(ex, "An error occurred while retrieving data of type {EntityType}", typeof(T).Name);
+                
                 return null;
             }
         } 
@@ -60,10 +62,35 @@ namespace Api.Repository
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while updating entity of type {EntityType}", typeof(T).Name);
+                
                 return false;
             }
         }
 
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            _transaction = await _context.Database.BeginTransactionAsync();
+            return  _transaction;
+        }
+
+        public async Task CommitTransactionAsync()
+        {
+             if (_transaction != null)
+            {
+                await _transaction.CommitAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
+
+        public async Task RollbackTransactionAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.RollbackAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
     }
 }
