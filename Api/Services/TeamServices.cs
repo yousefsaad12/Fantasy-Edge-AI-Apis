@@ -2,6 +2,8 @@
 
 
 
+using Api.Helper;
+
 namespace Api.Services
 {
     public class TeamServices : ITeamsServices
@@ -85,7 +87,7 @@ namespace Api.Services
                             await _unitOfWork.Teams.Create(team);
                         }
 
-                        else await UpdateTeam(team, existingTeam, tp);
+                        else await UpdateTeam(existingTeam, team, tp);
                     }
                 }
 
@@ -99,9 +101,39 @@ namespace Api.Services
             }
         }
 
-        public Task<bool> UpdateTeam(Team team, Team existingTeam, TeamPerformance teamPerformance)
+        public async Task<bool> UpdateTeam(Team existingTeam, Team updatedTeam, TeamPerformance teamPerformance)
         {
-            throw new NotImplementedException();
+            try
+            {   
+                if(updatedTeam is null || string.IsNullOrWhiteSpace(updatedTeam.TeamName) 
+                                || string.IsNullOrWhiteSpace(updatedTeam.ShortName) 
+                                || string.IsNullOrWhiteSpace(updatedTeam.TeamDivision))
+                {
+                    _logger.LogWarning("Invalid data to update a team");
+                     throw new ArgumentException("Team data can not be NULL");
+                }
+                if(existingTeam is null)
+                {
+                    _logger.LogInformation("Existing Team is null, update can not by applied");
+                    return false;
+                }
+
+               await TeamUpdateHelper.UpdateBasicTeamProperties(existingTeam, updatedTeam);
+               existingTeam.TeamPerformances.Add(teamPerformance);
+
+               bool isSuccess = await _unitOfWork.Teams.UpdateOne(existingTeam);
+
+               if(isSuccess) _logger.LogInformation("Team has been updated");
+               else _logger.LogWarning("An error happened can not update team");
+
+               return isSuccess;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while updating teams.{updatedTeam.TeamName}");
+                throw;
+            }
+            
         }
     }
 }
