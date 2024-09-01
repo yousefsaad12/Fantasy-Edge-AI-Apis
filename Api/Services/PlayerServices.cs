@@ -77,7 +77,10 @@ namespace Api.Services
         }
 
     
-
+        public async Task<IEnumerable<Player>> ? GetPlayersAsync()
+        {
+            return await _unitOfWork.Players.GetAll();
+        } 
 
         public async Task InsertPlayersAndRelatedEntitiesAsync(IEnumerable<PlayerJsonForm> playerJsonForms)
         {
@@ -118,6 +121,7 @@ namespace Api.Services
                             player.PlayerValues.Add(pv);
                         
                             // Insert the new player into the database
+                            player.TeamId = 1;
                             await CreatePlayer(player);
                         }
                         else await UpdatePlayer(existingPlayer, player, pp, ps, pt, pv);
@@ -190,4 +194,6 @@ namespace Api.Services
         }
 
     }
+
+
 }

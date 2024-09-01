@@ -43,6 +43,14 @@ app.MapGet("/fantasy", async ([FromServices] IFetchingService fantasyService) =>
     return Results.Ok(data);
 });
 
+
+app.MapGet("/fantasy/players", async ([FromServices] IPlayerServices playerServices) =>
+{
+    
+    var data = await playerServices.GetPlayersAsync();  // Adjust model as necessary
+    return Results.Ok(data);
+});
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

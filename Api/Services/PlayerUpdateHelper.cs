@@ -16,7 +16,7 @@ namespace Api.Services
                 existingPlayer.ChancePlayingNextRound = updatedPlayer.ChancePlayingNextRound;
                 existingPlayer.ChancePlayingThisRound = updatedPlayer.ChancePlayingThisRound;
                 existingPlayer.ElementTypeId = updatedPlayer.ElementTypeId;
-                existingPlayer.TeamId = updatedPlayer.TeamId;
+                existingPlayer.TeamId = 1;
 
                 if(existingPlayer.PlayerId != updatedPlayer.PlayerId)
                 existingPlayer.PlayerId = updatedPlayer.PlayerId;

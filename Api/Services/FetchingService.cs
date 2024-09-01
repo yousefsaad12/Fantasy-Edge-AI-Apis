@@ -42,7 +42,7 @@ namespace Api.Services
                     teamsJsonForms = JsonConvert.DeserializeObject<List<TeamsJsonForm>>(apiData["teams"].ToString())
                 };
 
-                await _playerServices.CreatePlayer(fantasyForm.playerJsonForms.First().MapToPlayer());
+                await _playerServices.InsertPlayersAndRelatedEntitiesAsync(fantasyForm.playerJsonForms);
                 return fantasyForm;
             }
             catch (HttpRequestException httpEx)
