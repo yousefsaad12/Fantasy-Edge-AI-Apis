@@ -61,7 +61,7 @@ namespace Api.Services
                     throw new ArgumentException("Player names cannot be null or empty.");
                 }
 
-                Player ? player = await _unitOfWork.Players.GetbyName(FirstName, SecondName,
+                Player ? player = await _unitOfWork.Players.GetByName(FirstName, SecondName,
                                                     p => p.PlayerPerformances,
                                                     p => p.PlayerStatistics,
                                                     p => p.PlayerTransfers,

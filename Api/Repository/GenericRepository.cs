@@ -22,14 +22,34 @@ namespace Api.Repository
         }
 
 
-        public async Task<T>? GetbyName(string FirstName, string LastName, params Expression<Func<T, object>>[] includes)
+        public async Task<T?> GetByName(string name1, string? name2 = null, Expression<Func<T, object>>[]? includes = null)
         {
-            IQueryable<T>query = _context.Set<T>();
+            IQueryable<T> query = _context.Set<T>();
 
-            foreach(var include in includes)
-                query = query.Include(include);
+            // Apply includes only if they are provided
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                    query = query.Include(include);
+            }
 
-            return await query.FirstOrDefaultAsync(e => EF.Property<string>(e, "FirstName") == FirstName && EF.Property<string>(e, "SecondName") == LastName);
+            // Check if the entity has FirstName and SecondName
+            if (typeof(T).GetProperty("FirstName") != null && typeof(T).GetProperty("SecondName") != null)
+            {
+                // This is for entities like Player with FirstName and SecondName
+                return await query.FirstOrDefaultAsync(e =>
+                    EF.Property<string>(e, "FirstName") == name1 &&
+                    EF.Property<string>(e, "SecondName") == name2);
+            }
+            // Check if the entity has TeamName
+            else if (typeof(T).GetProperty("TeamName") != null)
+            {
+                // This is for entities like Team with TeamName
+                return await query.FirstOrDefaultAsync(e =>
+                    EF.Property<string>(e, "TeamName") == name1);
+            }
+
+            return null; // Return null if neither condition matches
         }
 
          public async Task<IEnumerable<T>>? GetAll(params Expression<Func<T, object>>[] includes)

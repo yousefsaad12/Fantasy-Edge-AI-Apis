@@ -1,9 +1,14 @@
 
+
 namespace Api.Interfaces
 {
     public interface ITeamsServices
     {
         public  Task InsertTeamsAndRelatedEntitiesAsync(IEnumerable<TeamsJsonForm> TeamsJsonForm);
-        public Task<bool> CreatePlayer(Player player);
+        public Task<bool> CreateTeam(Team team);
+        public  Task<bool> UpdateTeam(Team team, TeamPerformance teamPerformance);
+        public Task<IEnumerable<Team>> ? GetTeamsAsync();
+
+        public Task<Team> ? GetTeamByName(string teamName);
     }
 }
