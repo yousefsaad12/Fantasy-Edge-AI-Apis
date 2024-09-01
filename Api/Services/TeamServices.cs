@@ -33,11 +33,18 @@ namespace Api.Services
                     _logger.LogInformation("Team with this name is already created");
                     return false;
                 }
-                
+
+                bool isSuccess = await _unitOfWork.Teams.Create(team);
+
+                if(isSuccess) _logger.LogInformation("Team has been Add");
+                else _logger.LogWarning($"Felid to added team with name {team.TeamName}");
+
+                return isSuccess;
 
             }
-            catch(Exception e)
-            {
+            catch(Exception ex)
+            {   
+                _logger.LogError(ex, $"An error occurred while creating team: {team.TeamName}");
                 throw;
             }
             
@@ -48,17 +55,51 @@ namespace Api.Services
             return await _unitOfWork.Teams.GetByName(teamName, null ,null);
         }
 
-        public Task<IEnumerable<Team>>? GetTeamsAsync()
+        public async Task<IEnumerable<Team>>? GetTeamsAsync()
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.Teams.GetAll();
         }
 
-        public Task InsertTeamsAndRelatedEntitiesAsync(IEnumerable<TeamsJsonForm> TeamsJsonForm)
+        public async Task InsertTeamsAndRelatedEntitiesAsync(IEnumerable<TeamsJsonForm> TeamsJsonForm)
         {
-            throw new NotImplementedException();
+            var Teams = TeamsJsonForm.Select(t => t.MapTeam()).ToList();
+            var TeamsPerformance = TeamsJsonForm.Select(tp => tp.MapTeamPerformance()).ToList();
+
+            const int batchSize = 100;
+
+            try
+            {
+                for(int i = 0; i < Teams.Count; i += batchSize)
+                {
+                    var batch = Teams.Skip(i).Take(batchSize).ToList();
+
+                    foreach(var team in batch)
+                    {
+                        var tp = TeamsPerformance.FirstOrDefault(tp => tp.TeamId == team.TeamId);
+                        Team existingTeam = await GetTeamByName(team.TeamName);
+
+                        if(existingTeam is null)
+                        {
+                            team.TeamPerformances.Add(tp);
+
+                            await _unitOfWork.Teams.Create(team);
+                        }
+
+                        else await UpdateTeam(team, existingTeam, tp);
+                    }
+                }
+
+                  _logger.LogInformation("All Teams inserted/updated successfully.");
+            }
+
+            catch(Exception ex)
+            {   
+                _logger.LogError(ex, "An error occurred while inserting/updating teams.");
+                throw;
+            }
         }
 
-        public Task<bool> UpdateTeam(Team team, TeamPerformance teamPerformance)
+        public Task<bool> UpdateTeam(Team team, Team existingTeam, TeamPerformance teamPerformance)
         {
             throw new NotImplementedException();
         }
