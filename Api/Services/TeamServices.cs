@@ -85,7 +85,6 @@ namespace Api.Services
     }
 
     var teams = teamsJsonForms.Select(t => t.MapTeam()).ToList();
-    var teamsPerformance = teamsJsonForms.Select(tp => tp.MapTeamPerformance()).ToList();
 
     try
     {
@@ -100,15 +99,6 @@ namespace Api.Services
             // Log the team details
             _logger.LogInformation($"Processing team with ID: {team.TeamId} and Name: {team.TeamName}");
 
-            team.TeamDivision = "sdadsa";
-
-            var tp = teamsPerformance.FirstOrDefault(tp => tp.TeamId == team.TeamId);
-
-            if (tp == null)
-            {
-                _logger.LogWarning($"Team performance data is null for team ID {team.TeamId}. Skipping.");
-                continue;  // Skip to the next iteration if the performance is null
-            }
 
             // Log team performance details
             _logger.LogInformation($"Team performance data found for team ID: {team.TeamId}");
@@ -119,13 +109,12 @@ namespace Api.Services
             if (existingTeam == null)
             {
                 _logger.LogInformation($"No existing team found. Inserting new team with ID: {team.TeamId} and Name: {team.TeamName}");
-                team.TeamPerformances.Add(tp);
                 await _unitOfWork.Teams.Create(team);
             }
             else
             {
                 _logger.LogInformation($"Existing team found. Updating team with ID: {team.TeamId} and Name: {team.TeamName}");
-                await UpdateTeam(existingTeam, team, tp);
+                await UpdateTeam(existingTeam, team);
             }
         }
 
@@ -140,7 +129,7 @@ namespace Api.Services
 
 
 
-public async Task<bool> UpdateTeam(Team existingTeam, Team updatedTeam, TeamPerformance teamPerformance)
+public async Task<bool> UpdateTeam(Team existingTeam, Team updatedTeam)
 {
     try
     {
@@ -158,13 +147,8 @@ public async Task<bool> UpdateTeam(Team existingTeam, Team updatedTeam, TeamPerf
             return false;
         }
 
-        if (existingTeam.TeamPerformances == null)
-        {
-            existingTeam.TeamPerformances = new List<TeamPerformance>();
-        }
-
         await TeamUpdateHelper.UpdateBasicTeamProperties(existingTeam, updatedTeam);
-        existingTeam.TeamPerformances.Add(teamPerformance);
+        
 
         bool isSuccess = await _unitOfWork.Teams.UpdateOne(existingTeam);
 

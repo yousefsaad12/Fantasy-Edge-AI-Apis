@@ -21,8 +21,6 @@ namespace Api.Repository
 
         public IGenericRepository<Team> Teams {get; private set;}
 
-        public IGenericRepository<TeamPerformance> TeamsPerformance {get; private set;}
-
 
         public UnitOfWork(AppDbContext context)
         {
@@ -35,7 +33,7 @@ namespace Api.Repository
             PlayersTransfer = new GenericRepository<PlayerTransfer>(_context);
             PlayersValue = new GenericRepository<PlayerValue>(_context);
             Teams = new GenericRepository<Team>(_context);
-            TeamsPerformance = new GenericRepository<TeamPerformance>(_context);
+
         }
         public async Task<int> Complete()
         {

@@ -13,7 +13,6 @@ namespace Api.Interfaces
         IGenericRepository<PlayerTransfer> PlayersTransfer { get; }
         IGenericRepository<PlayerValue> PlayersValue { get; }
         IGenericRepository<Team> Teams { get; }
-        IGenericRepository<TeamPerformance> TeamsPerformance { get; }
 
         public Task<int> Complete();
     }
