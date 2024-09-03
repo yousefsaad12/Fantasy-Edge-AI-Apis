@@ -17,7 +17,7 @@ namespace Api.Data
         public DbSet<PlayerValue> PlayerValue { get; set; }
         public DbSet<ElementTypes> ElementTypes { get; set; }
         public DbSet<Team> Teams { get; set; }
-        public DbSet<TeamPerformance> TeamPerformance { get; set; }
+       
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -117,7 +117,11 @@ namespace Api.Data
                 entity.Property(e => e.BonusPointsSystem).IsRequired().HasColumnType("int");
 
                 entity.Property(e => e.DreamTeamCount).IsRequired().HasColumnType("int");
+
+                entity.Property(e => e.CreatedAt).IsRequired().HasColumnType("DateTime").HasDefaultValueSql("GETDATE()");
                
+                entity.HasIndex(e => e.CreatedAt)
+                      .HasDatabaseName("IX_CreatedAt");
 
                 entity.HasOne(e => e.player)
                       .WithMany(p => p.PlayerPerformances)
@@ -167,8 +171,11 @@ namespace Api.Data
 
                 entity.Property(e => e.CleanSheetsPer90).IsRequired().HasColumnType("decimal(5, 2)");
 
-                
-               
+                entity.Property(e => e.CreatedAt).IsRequired().HasColumnType("DateTime").HasDefaultValueSql("GETDATE()");
+
+
+                entity.HasIndex(e => e.CreatedAt)
+                      .HasDatabaseName("IX_CreatedAt");
 
                 entity.HasOne(e => e.player)
                       .WithMany(p => p.PlayerStatistics)
@@ -193,7 +200,12 @@ namespace Api.Data
                 entity.Property(e => e.TransfersInEvent).IsRequired().HasColumnType("int");
 
                 entity.Property(e => e.TransfersOut).IsRequired().HasColumnType("int");
+                
+                entity.Property(e => e.CreatedAt).IsRequired().HasColumnType("DateTime").HasDefaultValueSql("GETDATE()");
+                
 
+                entity.HasIndex(e => e.CreatedAt)
+                      .HasDatabaseName("IX_CreatedAt");
 
                 entity.HasOne(e => e.player)
                       .WithMany(p => p.PlayerTransfers)
@@ -225,7 +237,12 @@ namespace Api.Data
                 entity.Property(e => e.ValueForm).IsRequired().HasColumnType("decimal(5, 2)");
 
                 entity.Property(e => e.ValueSeason).IsRequired().HasColumnType("decimal(5, 2)");
+                
+                entity.Property(e => e.CreatedAt).IsRequired().HasColumnType("DateTime").HasDefaultValueSql("GETDATE()");
 
+                
+                entity.HasIndex(e => e.CreatedAt)
+                      .HasDatabaseName("IX_CreatedAt");
 
                 entity.HasOne(e => e.player)
                       .WithMany(p => p.PlayerValues)
@@ -273,11 +290,15 @@ namespace Api.Data
 
                 entity.Property(e => e.ShortName).IsRequired().HasMaxLength(10);
 
-                entity.Property(e => e.Code).IsRequired().HasColumnType("int");
+                entity.Property(e => e.strength_overall_home).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.PulseID).IsRequired().HasColumnType("int");
+                entity.Property(e => e.strength_overall_away).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.TeamDivision).IsRequired().HasColumnType("nvarchar(150)");
+                entity.Property(e => e.strength_attack_home).IsRequired().HasColumnType("int"); 
+                entity.Property(e => e.strength_attack_away).IsRequired().HasColumnType("int"); 
+
+                entity.Property(e => e.strength_defence_home).IsRequired().HasColumnType("int"); 
+                entity.Property(e => e.strength_defence_away).IsRequired().HasColumnType("int"); 
 
 
 
@@ -286,43 +307,11 @@ namespace Api.Data
                       .HasForeignKey(p => p.TeamId)
                       .IsRequired();
 
-                entity.HasMany(e => e.TeamPerformances)
-                      .WithOne(tp => tp.team)
-                      .HasForeignKey(tp => tp.TeamId)
-                      .IsRequired();
 
             });
 
             #endregion
 
-             // TeamPerformance entity
-             #region 
-             modelBuilder.Entity<TeamPerformance>(entity => {
-
-                entity.ToTable("TeamPerformance");
-                entity.HasKey(e => e.TeamPerformanceId);
-
-                entity.Property(e => e.Played).IsRequired().HasColumnType("int");
-
-                entity.Property(e => e.Win).IsRequired().HasColumnType("int");
-
-                entity.Property(e => e.Loss).IsRequired().HasColumnType("int");
-
-                entity.Property(e => e.Draw).IsRequired().HasColumnType("int");
-
-                entity.Property(e => e.Points).IsRequired().HasColumnType("int");
-
-                entity.Property(e => e.Position).IsRequired().HasColumnType("int");
-                
-
-                entity.HasOne(e => e.team)
-                      .WithMany(t => t.TeamPerformances)
-                      .HasForeignKey(e => e.TeamId)
-                      .IsRequired();
-
-            });
-
-            #endregion
 
 
 
@@ -351,10 +340,6 @@ namespace Api.Data
             .HasDatabaseName("idx_player_statistics_player");
 
           
-
-            modelBuilder.Entity<TeamPerformance>()
-            .HasIndex(tp => tp.TeamId)
-            .HasDatabaseName("idx_team_performance_team");
         }
 
 

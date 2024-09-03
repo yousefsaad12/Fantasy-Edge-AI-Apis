@@ -8,6 +8,7 @@ namespace Api.Models.PlayerModels
         public int TransfersOut   { get; set; }
         public int TransfersOutEvent   { get; set; }
         
+        public DateTime CreatedAt { get; set; }
         public int PlayerId  { get; set; }
 
         // Navigation Properties

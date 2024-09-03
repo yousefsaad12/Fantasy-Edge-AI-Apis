@@ -3,6 +3,6 @@ namespace Api.Interfaces
 {
     public interface IFetchingService
     {
-        public Task<FantasyForm> FetchDataAsync(string url);
+        public Task <ICollection<TeamsJsonForm>> FetchDataAsync(string url);
     }
 }

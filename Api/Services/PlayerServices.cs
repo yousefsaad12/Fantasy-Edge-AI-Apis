@@ -121,7 +121,6 @@ namespace Api.Services
                             player.PlayerValues.Add(pv);
                         
                             // Insert the new player into the database
-                            player.TeamId = 1;
                             await CreatePlayer(player);
                         }
                         else await UpdatePlayer(existingPlayer, player, pp, ps, pt, pv);

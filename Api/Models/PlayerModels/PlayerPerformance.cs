@@ -23,6 +23,8 @@ namespace Api.Models.PlayerModels
         public int DreamTeamCount  { get; set; }
 
         public int PlayerId { get; set; }
+
+        public DateTime CreatedAt { get; set; }
         
 
         // Navigation Properties

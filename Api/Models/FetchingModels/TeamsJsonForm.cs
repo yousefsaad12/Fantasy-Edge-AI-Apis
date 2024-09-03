@@ -15,7 +15,7 @@ namespace Api.Models.FetchingModels
         public int position { get; set; }
         public string short_name { get; set; }
         public int strength { get; set; }
-        public int? team_division { get; set; }  // Nullable int since it might be null
+        public string team_division { get; set; }  // Nullable int since it might be null
         public bool unavailable { get; set; }
         public int win { get; set; }
         public int strength_overall_home { get; set; }

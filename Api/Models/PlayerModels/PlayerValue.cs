@@ -10,6 +10,7 @@ namespace Api.Models.PlayerModels
         public decimal  ValueForm { get; set; }
         public decimal ValueSeason { get; set; }
         
+        public DateTime CreatedAt { get; set; }
         public int PlayerId { get; set; }
 
         // Navigation Properties

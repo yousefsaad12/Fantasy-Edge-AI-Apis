@@ -8,6 +8,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IFetchingService, FetchingService>();
 builder.Services.AddScoped<IPlayerServices, PlayerServices>();
+builder.Services.AddScoped<ITeamsServices, TeamServices>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddDbContext<AppDbContext>(options => {

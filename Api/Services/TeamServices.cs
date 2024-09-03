@@ -15,42 +15,51 @@ namespace Api.Services
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
-        public async Task<bool> CreateTeam(Team team)
+
+
+
+
+       public async Task<bool> CreateTeam(Team team)
         {
             try
             {
+                _logger.LogInformation($"Attempting to create team with name: {team.TeamName}");
 
-                if(team is null || string.IsNullOrWhiteSpace(team.TeamName) 
-                                || string.IsNullOrWhiteSpace(team.ShortName) 
-                                || string.IsNullOrWhiteSpace(team.TeamDivision))
+                if (team == null || string.IsNullOrWhiteSpace(team.TeamName) || string.IsNullOrWhiteSpace(team.ShortName))
                 {
                     _logger.LogWarning("Invalid data to create a team");
-                     throw new ArgumentException("Team data can not be NULL");
+                    throw new ArgumentException("Team data cannot be NULL or empty");
                 }
 
-                Team ? existingTeam = await GetTeamByName(team.TeamName);
+                Team existingTeam = await GetTeamByName(team.TeamName);
 
-                if(existingTeam is not null)
+                if (existingTeam != null)
                 {
-                    _logger.LogInformation("Team with this name is already created");
+                    _logger.LogInformation("Team with this name already exists");
                     return false;
                 }
 
                 bool isSuccess = await _unitOfWork.Teams.Create(team);
 
-                if(isSuccess) _logger.LogInformation("Team has been Add");
-                else _logger.LogWarning($"Felid to added team with name {team.TeamName}");
+                if (isSuccess)
+                {
+                    _logger.LogInformation("Team has been added successfully");
+                }
+                else
+                {
+                    _logger.LogWarning($"Failed to add team with name {team.TeamName}");
+                }
 
                 return isSuccess;
-
             }
-            catch(Exception ex)
-            {   
+            catch (Exception ex)
+            {
                 _logger.LogError(ex, $"An error occurred while creating team: {team.TeamName}");
                 throw;
             }
-            
         }
+
+
 
         public async Task<Team>? GetTeamByName(string teamName)
         {
@@ -62,78 +71,119 @@ namespace Api.Services
             return await _unitOfWork.Teams.GetAll();
         }
 
-        public async Task InsertTeamsAndRelatedEntitiesAsync(IEnumerable<TeamsJsonForm> TeamsJsonForm)
+
+
+ public async Task InsertTeamsAndRelatedEntitiesAsync(IEnumerable<TeamsJsonForm> teamsJsonForms)
+{
+    // Log the start of the operation
+    _logger.LogInformation("Starting to insert/update teams.");
+
+    if (teamsJsonForms == null)
+    {
+        _logger.LogError("teamsJsonForms is null.");
+        throw new ArgumentNullException(nameof(teamsJsonForms), "TeamsJsonForms cannot be null.");
+    }
+
+    var teams = teamsJsonForms.Select(t => t.MapTeam()).ToList();
+    var teamsPerformance = teamsJsonForms.Select(tp => tp.MapTeamPerformance()).ToList();
+
+    try
+    {
+        foreach (var team in teams)
         {
-            var Teams = TeamsJsonForm.Select(t => t.MapTeam()).ToList();
-            var TeamsPerformance = TeamsJsonForm.Select(tp => tp.MapTeamPerformance()).ToList();
-
-            const int batchSize = 100;
-
-            try
+            if (team == null)
             {
-                for(int i = 0; i < Teams.Count; i += batchSize)
-                {
-                    var batch = Teams.Skip(i).Take(batchSize).ToList();
-
-                    foreach(var team in batch)
-                    {
-                        var tp = TeamsPerformance.FirstOrDefault(tp => tp.TeamId == team.TeamId);
-                        Team existingTeam = await GetTeamByName(team.TeamName);
-
-                        if(existingTeam is null)
-                        {
-                            team.TeamPerformances.Add(tp);
-
-                            await _unitOfWork.Teams.Create(team);
-                        }
-
-                        else await UpdateTeam(existingTeam, team, tp);
-                    }
-                }
-
-                  _logger.LogInformation("All Teams inserted/updated successfully.");
+                _logger.LogWarning("A null team object was found and skipped.");
+                continue;  // Skip to the next iteration if the team is null
             }
 
-            catch(Exception ex)
-            {   
-                _logger.LogError(ex, "An error occurred while inserting/updating teams.");
-                throw;
+            // Log the team details
+            _logger.LogInformation($"Processing team with ID: {team.TeamId} and Name: {team.TeamName}");
+
+            team.TeamDivision = "sdadsa";
+
+            var tp = teamsPerformance.FirstOrDefault(tp => tp.TeamId == team.TeamId);
+
+            if (tp == null)
+            {
+                _logger.LogWarning($"Team performance data is null for team ID {team.TeamId}. Skipping.");
+                continue;  // Skip to the next iteration if the performance is null
+            }
+
+            // Log team performance details
+            _logger.LogInformation($"Team performance data found for team ID: {team.TeamId}");
+
+            Team existingTeam = await GetTeamByName(team.TeamName);
+
+            // Log whether the team was found in the database or not
+            if (existingTeam == null)
+            {
+                _logger.LogInformation($"No existing team found. Inserting new team with ID: {team.TeamId} and Name: {team.TeamName}");
+                team.TeamPerformances.Add(tp);
+                await _unitOfWork.Teams.Create(team);
+            }
+            else
+            {
+                _logger.LogInformation($"Existing team found. Updating team with ID: {team.TeamId} and Name: {team.TeamName}");
+                await UpdateTeam(existingTeam, team, tp);
             }
         }
 
-        public async Task<bool> UpdateTeam(Team existingTeam, Team updatedTeam, TeamPerformance teamPerformance)
+        _logger.LogInformation("All teams inserted/updated successfully.");
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "An error occurred while inserting/updating teams.");
+        throw;
+    }
+}
+
+
+
+public async Task<bool> UpdateTeam(Team existingTeam, Team updatedTeam, TeamPerformance teamPerformance)
+{
+    try
+    {
+        _logger.LogInformation($"Updating team: {existingTeam?.TeamName ?? "null"} with data from: {updatedTeam.TeamName}");
+
+        if (updatedTeam == null || string.IsNullOrWhiteSpace(updatedTeam.TeamName) || string.IsNullOrWhiteSpace(updatedTeam.ShortName))
         {
-            try
-            {   
-                if(updatedTeam is null || string.IsNullOrWhiteSpace(updatedTeam.TeamName) 
-                                || string.IsNullOrWhiteSpace(updatedTeam.ShortName) 
-                                || string.IsNullOrWhiteSpace(updatedTeam.TeamDivision))
-                {
-                    _logger.LogWarning("Invalid data to update a team");
-                     throw new ArgumentException("Team data can not be NULL");
-                }
-                if(existingTeam is null)
-                {
-                    _logger.LogInformation("Existing Team is null, update can not by applied");
-                    return false;
-                }
-
-               await TeamUpdateHelper.UpdateBasicTeamProperties(existingTeam, updatedTeam);
-               existingTeam.TeamPerformances.Add(teamPerformance);
-
-               bool isSuccess = await _unitOfWork.Teams.UpdateOne(existingTeam);
-
-               if(isSuccess) _logger.LogInformation("Team has been updated");
-               else _logger.LogWarning("An error happened can not update team");
-
-               return isSuccess;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"An error occurred while updating teams.{updatedTeam.TeamName}");
-                throw;
-            }
-            
+            _logger.LogWarning("Invalid data to update a team");
+            throw new ArgumentException("Team data cannot be NULL or empty");
         }
+
+        if (existingTeam == null)
+        {
+            _logger.LogInformation("Existing team is null, update cannot be applied");
+            return false;
+        }
+
+        if (existingTeam.TeamPerformances == null)
+        {
+            existingTeam.TeamPerformances = new List<TeamPerformance>();
+        }
+
+        await TeamUpdateHelper.UpdateBasicTeamProperties(existingTeam, updatedTeam);
+        existingTeam.TeamPerformances.Add(teamPerformance);
+
+        bool isSuccess = await _unitOfWork.Teams.UpdateOne(existingTeam);
+
+        if (isSuccess)
+        {
+            _logger.LogInformation("Team has been updated successfully");
+        }
+        else
+        {
+            _logger.LogWarning("An error occurred while updating the team");
+        }
+
+        return isSuccess;
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, $"An error occurred while updating team: {updatedTeam.TeamName}");
+        throw;
+    }
+}
     }
 }

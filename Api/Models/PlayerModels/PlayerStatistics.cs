@@ -18,7 +18,8 @@ namespace Api.Models.PlayerModels
       public decimal GoalsConcededPer90  { get; set; }  
       public decimal StartsPer90  { get; set; }  
       public decimal CleanSheetsPer90  { get; set; }
-    
+
+      public DateTime CreatedAt { get; set; }
       public int PlayerId { get; set; }
 
 
