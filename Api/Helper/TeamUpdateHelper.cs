@@ -19,9 +19,7 @@ namespace Api.Helper
                 team.strength_attack_away = updatedTeam.strength_attack_away;
                 team.strength_defence_home = updatedTeam.strength_defence_home;
                 team.strength_defence_away = updatedTeam.strength_defence_away;
-                
-                if(team.TeamId != updatedTeam.TeamId)
-                team.TeamId  = updatedTeam.TeamId;
+               
             }
 
               catch (Exception ex)

@@ -11,7 +11,8 @@ namespace Api.Mapping
             try
             {   
                 return new Team
-                {
+                {   
+                    TeamId = teamJson.id,
                     TeamName = teamJson.name,
                     ShortName = teamJson.short_name,
                     strength_overall_home = teamJson.strength_overall_home,

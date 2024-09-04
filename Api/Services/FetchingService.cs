@@ -46,7 +46,7 @@ namespace Api.Services
 
 
                 await _teamServices.InsertTeamsAndRelatedEntitiesAsync(fantasyForm.teamsJsonForms);
-                //await _playerServices.InsertPlayersAndRelatedEntitiesAsync(fantasyForm.playerJsonForms);
+                await _playerServices.InsertPlayersAndRelatedEntitiesAsync(fantasyForm.playerJsonForms);
                 
                 return fantasyForm.teamsJsonForms;
             }

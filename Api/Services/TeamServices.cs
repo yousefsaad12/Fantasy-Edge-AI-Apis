@@ -19,7 +19,7 @@ namespace Api.Services
 
 
 
-       public async Task<bool> CreateTeam(Team team)
+    public async Task<bool> CreateTeam(Team team)
         {
             try
             {
@@ -72,10 +72,8 @@ namespace Api.Services
         }
 
 
-
- public async Task InsertTeamsAndRelatedEntitiesAsync(IEnumerable<TeamsJsonForm> teamsJsonForms)
+public async Task InsertTeamsAndRelatedEntitiesAsync(IEnumerable<TeamsJsonForm> teamsJsonForms)
 {
-    // Log the start of the operation
     _logger.LogInformation("Starting to insert/update teams.");
 
     if (teamsJsonForms == null)
@@ -84,37 +82,33 @@ namespace Api.Services
         throw new ArgumentNullException(nameof(teamsJsonForms), "TeamsJsonForms cannot be null.");
     }
 
-    var teams = teamsJsonForms.Select(t => t.MapTeam()).ToList();
+        var Teams = teamsJsonForms.Select(t => t.MapTeam()).ToList();
 
     try
     {
-        foreach (var team in teams)
+        // Retrieve all existing teams at once to reduce the number of database calls
+        var existingTeams = (await _unitOfWork.Teams.GetAll()).ToDictionary(t => t.TeamName);
+
+        foreach (var team in Teams)
         {
+
             if (team == null)
             {
                 _logger.LogWarning("A null team object was found and skipped.");
-                continue;  // Skip to the next iteration if the team is null
+                continue;
             }
 
-            // Log the team details
-            _logger.LogInformation($"Processing team with ID: {team.TeamId} and Name: {team.TeamName}");
+            _logger.LogInformation($"Processing team with Name: {team.TeamName}");
 
-
-            // Log team performance details
-            _logger.LogInformation($"Team performance data found for team ID: {team.TeamId}");
-
-            Team existingTeam = await GetTeamByName(team.TeamName);
-
-            // Log whether the team was found in the database or not
-            if (existingTeam == null)
+            if (existingTeams.TryGetValue(team.TeamName, out var existingTeam))
             {
-                _logger.LogInformation($"No existing team found. Inserting new team with ID: {team.TeamId} and Name: {team.TeamName}");
-                await _unitOfWork.Teams.Create(team);
+                _logger.LogInformation($"Existing team found. Updating team with Name: {team.TeamName}");
+                await UpdateTeam(existingTeam, team);
             }
             else
             {
-                _logger.LogInformation($"Existing team found. Updating team with ID: {team.TeamId} and Name: {team.TeamName}");
-                await UpdateTeam(existingTeam, team);
+                _logger.LogInformation($"No existing team found. Inserting new team with Name: {team.TeamName}");
+                await _unitOfWork.Teams.Create(team);
             }
         }
 
