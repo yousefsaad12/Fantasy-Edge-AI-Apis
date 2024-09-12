@@ -14,6 +14,7 @@ namespace Api.Repository
             _context = context;
             
         }
+
         public async Task<bool> Create(T entity)
         {
            await _context.Set<T>().AddAsync(entity);
@@ -52,7 +53,8 @@ namespace Api.Repository
             return null; // Return null if neither condition matches
         }
 
-         public async Task<IEnumerable<T>>? GetAll(params Expression<Func<T, object>>[] includes)
+
+        public async Task<IEnumerable<T>>? GetAll(params Expression<Func<T, object>>[] includes)
         {   
             try
             {

@@ -1,7 +1,3 @@
-
-
-
-
 using Api.Helper;
 
 namespace Api.Services
@@ -19,7 +15,7 @@ namespace Api.Services
 
 
 
-    public async Task<bool> CreateTeam(Team team)
+        public async Task<bool> CreateTeam(Team team)
         {
             try
             {
@@ -72,96 +68,96 @@ namespace Api.Services
         }
 
 
-public async Task InsertTeamsAndRelatedEntitiesAsync(IEnumerable<TeamsJsonForm> teamsJsonForms)
-{
-    _logger.LogInformation("Starting to insert/update teams.");
-
-    if (teamsJsonForms == null)
-    {
-        _logger.LogError("teamsJsonForms is null.");
-        throw new ArgumentNullException(nameof(teamsJsonForms), "TeamsJsonForms cannot be null.");
-    }
-
-        var Teams = teamsJsonForms.Select(t => t.MapTeam()).ToList();
-
-    try
-    {
-        // Retrieve all existing teams at once to reduce the number of database calls
-        var existingTeams = (await _unitOfWork.Teams.GetAll()).ToDictionary(t => t.TeamName);
-
-        foreach (var team in Teams)
+        public async Task InsertTeamsAndRelatedEntitiesAsync(IEnumerable<TeamsJsonForm> teamsJsonForms)
         {
+            _logger.LogInformation("Starting to insert/update teams.");
 
-            if (team == null)
+            if (teamsJsonForms == null)
             {
-                _logger.LogWarning("A null team object was found and skipped.");
-                continue;
+                _logger.LogError("teamsJsonForms is null.");
+                throw new ArgumentNullException(nameof(teamsJsonForms), "TeamsJsonForms cannot be null.");
             }
 
-            _logger.LogInformation($"Processing team with Name: {team.TeamName}");
+                var Teams = teamsJsonForms.Select(t => t.MapTeam()).ToList();
 
-            if (existingTeams.TryGetValue(team.TeamName, out var existingTeam))
+            try
             {
-                _logger.LogInformation($"Existing team found. Updating team with Name: {team.TeamName}");
-                await UpdateTeam(existingTeam, team);
+                // Retrieve all existing teams at once to reduce the number of database calls
+                var existingTeams = (await _unitOfWork.Teams.GetAll()).ToDictionary(t => t.TeamName);
+
+                foreach (var team in Teams)
+                {
+
+                    if (team == null)
+                    {
+                        _logger.LogWarning("A null team object was found and skipped.");
+                        continue;
+                    }
+
+                    _logger.LogInformation($"Processing team with Name: {team.TeamName}");
+
+                    if (existingTeams.TryGetValue(team.TeamName, out var existingTeam))
+                    {
+                        _logger.LogInformation($"Existing team found. Updating team with Name: {team.TeamName}");
+                        await UpdateTeam(existingTeam, team);
+                    }
+                    else
+                    {
+                        _logger.LogInformation($"No existing team found. Inserting new team with Name: {team.TeamName}");
+                        await _unitOfWork.Teams.Create(team);
+                    }
+                }
+
+                _logger.LogInformation("All teams inserted/updated successfully.");
             }
-            else
+            catch (Exception ex)
             {
-                _logger.LogInformation($"No existing team found. Inserting new team with Name: {team.TeamName}");
-                await _unitOfWork.Teams.Create(team);
+                _logger.LogError(ex, "An error occurred while inserting/updating teams.");
+                throw;
             }
         }
 
-        _logger.LogInformation("All teams inserted/updated successfully.");
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "An error occurred while inserting/updating teams.");
-        throw;
-    }
-}
 
 
-
-public async Task<bool> UpdateTeam(Team existingTeam, Team updatedTeam)
-{
-    try
-    {
-        _logger.LogInformation($"Updating team: {existingTeam?.TeamName ?? "null"} with data from: {updatedTeam.TeamName}");
-
-        if (updatedTeam == null || string.IsNullOrWhiteSpace(updatedTeam.TeamName) || string.IsNullOrWhiteSpace(updatedTeam.ShortName))
+        public async Task<bool> UpdateTeam(Team existingTeam, Team updatedTeam)
         {
-            _logger.LogWarning("Invalid data to update a team");
-            throw new ArgumentException("Team data cannot be NULL or empty");
+            try
+            {
+                _logger.LogInformation($"Updating team: {existingTeam?.TeamName ?? "null"} with data from: {updatedTeam.TeamName}");
+
+                if (updatedTeam == null || string.IsNullOrWhiteSpace(updatedTeam.TeamName) || string.IsNullOrWhiteSpace(updatedTeam.ShortName))
+                {
+                    _logger.LogWarning("Invalid data to update a team");
+                    throw new ArgumentException("Team data cannot be NULL or empty");
+                }
+
+                if (existingTeam == null)
+                {
+                    _logger.LogInformation("Existing team is null, update cannot be applied");
+                    return false;
+                }
+
+                await TeamUpdateHelper.UpdateBasicTeamProperties(existingTeam, updatedTeam);
+                
+
+                bool isSuccess = await _unitOfWork.Teams.UpdateOne(existingTeam);
+
+                if (isSuccess)
+                {
+                    _logger.LogInformation("Team has been updated successfully");
+                }
+                else
+                {
+                    _logger.LogWarning("An error occurred while updating the team");
+                }
+
+                return isSuccess;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while updating team: {updatedTeam.TeamName}");
+                throw;
+            }
         }
-
-        if (existingTeam == null)
-        {
-            _logger.LogInformation("Existing team is null, update cannot be applied");
-            return false;
-        }
-
-        await TeamUpdateHelper.UpdateBasicTeamProperties(existingTeam, updatedTeam);
-        
-
-        bool isSuccess = await _unitOfWork.Teams.UpdateOne(existingTeam);
-
-        if (isSuccess)
-        {
-            _logger.LogInformation("Team has been updated successfully");
-        }
-        else
-        {
-            _logger.LogWarning("An error occurred while updating the team");
-        }
-
-        return isSuccess;
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, $"An error occurred while updating team: {updatedTeam.TeamName}");
-        throw;
-    }
-}
     }
 }

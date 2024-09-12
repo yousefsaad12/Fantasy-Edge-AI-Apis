@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore.Query.Internal;
+
 namespace Api.Services
 {
     public class PlayerServices : IPlayerServices
@@ -79,7 +81,11 @@ namespace Api.Services
     
         public async Task<IEnumerable<Player>> ? GetPlayersAsync()
         {
-            return await _unitOfWork.Players.GetAll();
+            return await _unitOfWork.Players.GetAll(p => p.PlayerPerformances, 
+                                                    p => p.PlayerStatistics,
+                                                    p => p.PlayerValues,
+                                                    p => p.PlayerTransfers);
+      
         } 
 
         public async Task InsertPlayersAndRelatedEntitiesAsync(IEnumerable<PlayerJsonForm> playerJsonForms)
