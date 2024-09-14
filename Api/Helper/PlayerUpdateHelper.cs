@@ -17,6 +17,12 @@ namespace Api.Services
                 existingPlayer.ChancePlayingThisRound = updatedPlayer.ChancePlayingThisRound;
                 existingPlayer.ElementTypeId = updatedPlayer.ElementTypeId;
                 existingPlayer.TeamId = updatedPlayer.TeamId;
+                existingPlayer.NowCost = updatedPlayer.NowCost;
+                existingPlayer.CostChangeEvent = updatedPlayer.CostChangeEvent;
+                existingPlayer.CostChangeStart = updatedPlayer.CostChangeStart;
+                existingPlayer.SelectedByPercent = updatedPlayer.SelectedByPercent;
+                existingPlayer.ValueForm = updatedPlayer.ValueForm;
+                existingPlayer.ValueSeason = updatedPlayer.ValueSeason;
 
                 if(existingPlayer.PlayerId != updatedPlayer.PlayerId)
                 existingPlayer.PlayerId = updatedPlayer.PlayerId;
