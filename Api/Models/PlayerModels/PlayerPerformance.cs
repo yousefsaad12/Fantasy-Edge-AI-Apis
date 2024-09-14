@@ -20,7 +20,7 @@ namespace Api.Models.PlayerModels
         public int Saves { get; set; }
         public int Bonus { get; set; }
         public int BonusPointsSystem { get; set; }
-        public int DreamTeamCount  { get; set; }
+        public bool IsDreamTeam  { get; set; }
 
         public int PlayerId { get; set; }
 

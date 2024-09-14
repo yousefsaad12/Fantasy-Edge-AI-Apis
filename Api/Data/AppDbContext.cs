@@ -115,7 +115,7 @@ namespace Api.Data
 
                 entity.Property(e => e.BonusPointsSystem).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.DreamTeamCount).IsRequired().HasColumnType("int");
+                entity.Property(e => e.IsDreamTeam).IsRequired().HasColumnType("BOOLEAN");
 
                 entity.Property(e => e.CreatedAt).IsRequired().HasColumnType("DateTime").HasDefaultValueSql("GETDATE()");
                
@@ -155,20 +155,6 @@ namespace Api.Data
                 entity.Property(e => e.ExpectedGoalInvolvements).IsRequired().HasColumnType("decimal(5, 2)");
 
                 entity.Property(e => e.ExpectedGoalsConceded).IsRequired().HasColumnType("decimal(5, 2)");
-
-                entity.Property(e => e.ExpectedGoalsPer90).IsRequired().HasColumnType("decimal(5, 2)");
-
-                entity.Property(e => e.ExpectedAssistsPer90).IsRequired().HasColumnType("decimal(5, 2)");
-
-                entity.Property(e => e.ExpectedGoalInvolvementsPer90).IsRequired().HasColumnType("decimal(5, 2)");
-
-                entity.Property(e => e.ExpectedGoalsConcededPer90).IsRequired().HasColumnType("decimal(5, 2)");
-
-                entity.Property(e => e.GoalsConcededPer90).IsRequired().HasColumnType("decimal(5, 2)");
-
-                entity.Property(e => e.StartsPer90).IsRequired().HasColumnType("decimal(5, 2)");
-
-                entity.Property(e => e.CleanSheetsPer90).IsRequired().HasColumnType("decimal(5, 2)");
 
                 entity.Property(e => e.CreatedAt).IsRequired().HasColumnType("DateTime").HasDefaultValueSql("GETDATE()");
 

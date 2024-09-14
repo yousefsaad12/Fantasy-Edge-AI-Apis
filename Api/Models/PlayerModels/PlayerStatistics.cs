@@ -11,13 +11,7 @@ namespace Api.Models.PlayerModels
       public decimal ExpectedAssists { get; set; }  
       public decimal ExpectedGoalInvolvements { get; set; }  
       public decimal ExpectedGoalsConceded { get; set; }  
-      public decimal ExpectedGoalsPer90  { get; set; }  
-      public decimal ExpectedAssistsPer90  { get; set; }  
-      public decimal ExpectedGoalInvolvementsPer90 { get; set; }  
-      public decimal ExpectedGoalsConcededPer90 { get; set; }  
-      public decimal GoalsConcededPer90  { get; set; }  
-      public decimal StartsPer90  { get; set; }  
-      public decimal CleanSheetsPer90  { get; set; }
+      
 
       public DateTime CreatedAt { get; set; }
       public int PlayerId { get; set; }
