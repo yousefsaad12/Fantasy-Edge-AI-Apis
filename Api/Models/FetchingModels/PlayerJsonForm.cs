@@ -41,5 +41,7 @@ namespace Api.Models.FetchingModels
         public decimal selected_by_percent { get; set; }
         public decimal  value_form { get; set; }
         public decimal value_season { get; set; }
+
+        public PlayerStatAndPerJson playerStatAndPerJson { get; set; }
     }
 }

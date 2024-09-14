@@ -40,7 +40,7 @@ namespace Api.Mapping
                 Saves = latestPerformance?.Saves ?? 0,
                 Bonus = latestPerformance?.Bonus ?? 0,
                 BonusPointsSystem = latestPerformance?.BonusPointsSystem ?? 0,
-                DreamTeamCount = latestPerformance?.DreamTeamCount ?? 0,
+               
 
                 // Value Data
                 NowCost = latestValue?.NowCost ?? 0,
@@ -65,13 +65,10 @@ namespace Api.Mapping
                 ExpectedAssists = latestStatistics.ExpectedAssists,
                 ExpectedGoalInvolvements = latestStatistics.ExpectedGoalInvolvements,
                 ExpectedGoalsConceded = latestStatistics.ExpectedGoalsConceded,
-                ExpectedGoalsPer90 = latestStatistics.ExpectedGoalsPer90,
-                ExpectedAssistsPer90 = latestStatistics.ExpectedAssistsPer90,
-                ExpectedGoalInvolvementsPer90 = latestStatistics.ExpectedGoalInvolvementsPer90,
-                ExpectedGoalsConcededPer90 = latestStatistics.ExpectedGoalsConcededPer90,
-                GoalsConcededPer90 = latestStatistics.GoalsConcededPer90,
-                StartsPer90 = latestStatistics.StartsPer90 ,
-                CleanSheetsPer90 = latestStatistics.CleanSheetsPer90,
+
+                
+                
+                
             };
 
         }

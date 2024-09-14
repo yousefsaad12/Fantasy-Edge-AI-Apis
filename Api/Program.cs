@@ -48,6 +48,13 @@ app.MapGet("/fantasy", async ([FromServices] IFetchingService fantasyService) =>
     return Results.Ok(data);
 });
 
+app.MapGet("/stat", async ([FromServices] IFetchingService fantasyService) =>
+{
+    var url = "https://fantasy.premierleague.com/api/event/3/live/";
+    var data = await fantasyService.FetchPerformAsync(url);  // Adjust model as necessary
+    return Results.Ok(data);
+});
+
 
 app.MapGet("/fantasy/players", async ([FromServices] IPlayerServices playerServices) =>
 {

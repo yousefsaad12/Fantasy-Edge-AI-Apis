@@ -18,7 +18,6 @@ namespace Api.Mapping
                     Status = playerJsonForm.status,
                     SquadNumber = playerJsonForm.squad_number,
                     News = playerJsonForm.news,
-                    NewsAdded = playerJsonForm.news_added,
                     ChancePlayingNextRound = playerJsonForm.chance_of_playing_next_round,
                     ElementTypeId = playerJsonForm.element_type,
                     ChancePlayingThisRound = playerJsonForm.chance_of_playing_this_round,
@@ -26,8 +25,6 @@ namespace Api.Mapping
 
                     // Initialize navigation properties to empty collections
                     PlayerPerformances = new List<PlayerPerformance>(),
-                    PlayerValues = new List<PlayerValue>(),
-                    PlayerTransfers = new List<PlayerTransfer>(),
                     PlayerStatistics = new List<PlayerStatistics>()
                 };
             }

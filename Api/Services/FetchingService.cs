@@ -44,11 +44,61 @@ namespace Api.Services
                     teamsJsonForms = JsonConvert.DeserializeObject<List<TeamsJsonForm>>(apiData["teams"].ToString())
                 };
 
+                var playerStat = FetchPerformAsync("");
 
                 await _teamServices.InsertTeamsAndRelatedEntitiesAsync(fantasyForm.teamsJsonForms).ConfigureAwait(false);
                 await _playerServices.InsertPlayersAndRelatedEntitiesAsync(fantasyForm.playerJsonForms).ConfigureAwait(false);
                 
                 return fantasyForm.teamsJsonForms;
+            }
+            catch (HttpRequestException httpEx)
+            {
+                _logger.LogError(httpEx, "HTTP error occurred while fetching data from {Url}", url);
+                throw new Exception("A network error occurred while fetching data from the API.", httpEx);
+            }
+            catch (JsonSerializationException jsonEx)
+            {
+                _logger.LogError(jsonEx, "JSON deserialization error for data from {Url}", url);
+                throw new Exception("An error occurred while deserializing the API response.", jsonEx);
+            }
+            catch (KeyNotFoundException keyEx)
+            {
+                _logger.LogError(keyEx, "Key not found in the response data while fetching from {Url}", url);
+                throw new Exception("An expected key was not found in the response data.", keyEx);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An unexpected error occurred while fetching data from {Url}", url);
+                throw new Exception("An unexpected error occurred during the data fetch operation.", ex);
+            }
+        }
+
+
+        public async Task<ICollection<PlayerStatAndPerJson>> FetchPerformAsync(string url)
+        {
+            try
+            {
+                _logger.LogInformation("Fetching data from {Url}", url);
+
+                var response = await _httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode(); // Throws if the status code is not successful
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                var apiData = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+
+                if (apiData == null || !apiData.ContainsKey("elements"))
+                {
+                    _logger.LogError("Invalid data format received from API.");
+                    throw new JsonSerializationException("Missing 'elements' or 'teams' keys in API response.");
+                }
+
+                _logger.LogInformation("Successfully fetched and parsed data from API.");
+
+                List<PlayerStatAndPerJson> statAndPerJson = JsonConvert.DeserializeObject<List<PlayerStatAndPerJson>>(apiData["elements"].ToString());
+
+                
+                return statAndPerJson;
             }
             catch (HttpRequestException httpEx)
             {
