@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Api.Migrations
 {
     /// <inheritdoc />
-    public partial class IntialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,6 +57,12 @@ namespace Api.Migrations
                     NewsAdded = table.Column<DateTime>(type: "datetime", nullable: true),
                     ChancePlayingNextRound = table.Column<int>(type: "int", nullable: true),
                     ChancePlayingThisRound = table.Column<int>(type: "int", nullable: true),
+                    NowCost = table.Column<int>(type: "int", nullable: true),
+                    CostChangeEvent = table.Column<int>(type: "int", nullable: true),
+                    CostChangeStart = table.Column<int>(type: "int", nullable: true),
+                    SelectedByPercent = table.Column<decimal>(type: "decimal(5,2)", nullable: true),
+                    ValueForm = table.Column<decimal>(type: "decimal(5,2)", nullable: true),
+                    ValueSeason = table.Column<decimal>(type: "decimal(5,2)", nullable: true),
                     ElementTypeId = table.Column<int>(type: "int", nullable: false),
                     TeamId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -98,7 +104,7 @@ namespace Api.Migrations
                     Saves = table.Column<int>(type: "int", nullable: false),
                     Bonus = table.Column<int>(type: "int", nullable: false),
                     BonusPointsSystem = table.Column<int>(type: "int", nullable: false),
-                    DreamTeamCount = table.Column<int>(type: "int", nullable: false),
+                    IsDreamTeam = table.Column<bool>(type: "BIT", nullable: false),
                     PlayerId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "DateTime", nullable: false, defaultValueSql: "GETDATE()")
                 },
@@ -127,13 +133,6 @@ namespace Api.Migrations
                     ExpectedAssists = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     ExpectedGoalInvolvements = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     ExpectedGoalsConceded = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    ExpectedGoalsPer90 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    ExpectedAssistsPer90 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    ExpectedGoalInvolvementsPer90 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    ExpectedGoalsConcededPer90 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    GoalsConcededPer90 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    StartsPer90 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    CleanSheetsPer90 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "DateTime", nullable: false, defaultValueSql: "GETDATE()"),
                     PlayerId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -142,56 +141,6 @@ namespace Api.Migrations
                     table.PrimaryKey("PK_PlayersStatistics", x => x.PlayerStatisticsId);
                     table.ForeignKey(
                         name: "FK_PlayersStatistics_Players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "Players",
-                        principalColumn: "PlayerId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PlayersTransfer",
-                columns: table => new
-                {
-                    PlayerTransferId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TransfersIn = table.Column<int>(type: "int", nullable: false),
-                    TransfersInEvent = table.Column<int>(type: "int", nullable: false),
-                    TransfersOut = table.Column<int>(type: "int", nullable: false),
-                    TransfersOutEvent = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "DateTime", nullable: false, defaultValueSql: "GETDATE()"),
-                    PlayerId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PlayersTransfer", x => x.PlayerTransferId);
-                    table.ForeignKey(
-                        name: "FK_PlayersTransfer_Players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "Players",
-                        principalColumn: "PlayerId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PlayersValues",
-                columns: table => new
-                {
-                    PlayerValueId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NowCost = table.Column<int>(type: "int", nullable: false),
-                    CostChangeEvent = table.Column<int>(type: "int", nullable: false),
-                    CostChangeStart = table.Column<int>(type: "int", nullable: false),
-                    SelectedByPercent = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    ValueForm = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    ValueSeason = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "DateTime", nullable: false, defaultValueSql: "GETDATE()"),
-                    PlayerId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PlayersValues", x => x.PlayerValueId);
-                    table.ForeignKey(
-                        name: "FK_PlayersValues_Players_PlayerId",
                         column: x => x.PlayerId,
                         principalTable: "Players",
                         principalColumn: "PlayerId",
@@ -232,26 +181,6 @@ namespace Api.Migrations
                 name: "IX_CreatedAt",
                 table: "PlayersStatistics",
                 column: "CreatedAt");
-
-            migrationBuilder.CreateIndex(
-                name: "idx_player_transfer_player",
-                table: "PlayersTransfer",
-                column: "PlayerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CreatedAt",
-                table: "PlayersTransfer",
-                column: "CreatedAt");
-
-            migrationBuilder.CreateIndex(
-                name: "idx_player_value_player",
-                table: "PlayersValues",
-                column: "PlayerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CreatedAt",
-                table: "PlayersValues",
-                column: "CreatedAt");
         }
 
         /// <inheritdoc />
@@ -262,12 +191,6 @@ namespace Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "PlayersStatistics");
-
-            migrationBuilder.DropTable(
-                name: "PlayersTransfer");
-
-            migrationBuilder.DropTable(
-                name: "PlayersValues");
 
             migrationBuilder.DropTable(
                 name: "Players");

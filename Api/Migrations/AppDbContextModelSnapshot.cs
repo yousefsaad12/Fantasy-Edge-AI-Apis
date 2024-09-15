@@ -50,6 +50,12 @@ namespace Api.Migrations
                     b.Property<int?>("ChancePlayingThisRound")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CostChangeEvent")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CostChangeStart")
+                        .HasColumnType("int");
+
                     b.Property<int>("ElementTypeId")
                         .HasColumnType("int");
 
@@ -63,9 +69,15 @@ namespace Api.Migrations
                     b.Property<DateTime?>("NewsAdded")
                         .HasColumnType("datetime");
 
+                    b.Property<int?>("NowCost")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecondName")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal?>("SelectedByPercent")
+                        .HasColumnType("decimal(5, 2)");
 
                     b.Property<int?>("SquadNumber")
                         .HasColumnType("int");
@@ -76,6 +88,12 @@ namespace Api.Migrations
 
                     b.Property<int>("TeamId")
                         .HasColumnType("int");
+
+                    b.Property<decimal?>("ValueForm")
+                        .HasColumnType("decimal(5, 2)");
+
+                    b.Property<decimal?>("ValueSeason")
+                        .HasColumnType("decimal(5, 2)");
 
                     b.Property<string>("WebName")
                         .IsRequired()
@@ -118,9 +136,6 @@ namespace Api.Migrations
                         .HasColumnType("DateTime")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("DreamTeamCount")
-                        .HasColumnType("int");
-
                     b.Property<int>("EventPoints")
                         .HasColumnType("int");
 
@@ -129,6 +144,9 @@ namespace Api.Migrations
 
                     b.Property<int>("GoalsScored")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDreamTeam")
+                        .HasColumnType("BIT");
 
                     b.Property<int>("Minutes")
                         .HasColumnType("int");
@@ -176,9 +194,6 @@ namespace Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlayerStatisticsId"));
 
-                    b.Property<decimal>("CleanSheetsPer90")
-                        .HasColumnType("decimal(5, 2)");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("DateTime")
@@ -190,28 +205,13 @@ namespace Api.Migrations
                     b.Property<decimal>("ExpectedAssists")
                         .HasColumnType("decimal(5, 2)");
 
-                    b.Property<decimal>("ExpectedAssistsPer90")
-                        .HasColumnType("decimal(5, 2)");
-
                     b.Property<decimal>("ExpectedGoalInvolvements")
-                        .HasColumnType("decimal(5, 2)");
-
-                    b.Property<decimal>("ExpectedGoalInvolvementsPer90")
                         .HasColumnType("decimal(5, 2)");
 
                     b.Property<decimal>("ExpectedGoals")
                         .HasColumnType("decimal(5, 2)");
 
                     b.Property<decimal>("ExpectedGoalsConceded")
-                        .HasColumnType("decimal(5, 2)");
-
-                    b.Property<decimal>("ExpectedGoalsConcededPer90")
-                        .HasColumnType("decimal(5, 2)");
-
-                    b.Property<decimal>("ExpectedGoalsPer90")
-                        .HasColumnType("decimal(5, 2)");
-
-                    b.Property<decimal>("GoalsConcededPer90")
                         .HasColumnType("decimal(5, 2)");
 
                     b.Property<decimal>("IctIndex")
@@ -222,9 +222,6 @@ namespace Api.Migrations
 
                     b.Property<int>("PlayerId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("StartsPer90")
-                        .HasColumnType("decimal(5, 2)");
 
                     b.Property<decimal>("Threat")
                         .HasColumnType("decimal(5, 2)");
@@ -238,90 +235,6 @@ namespace Api.Migrations
                         .HasDatabaseName("idx_player_statistics_player");
 
                     b.ToTable("PlayersStatistics", (string)null);
-                });
-
-            modelBuilder.Entity("Api.Models.PlayerModels.PlayerTransfer", b =>
-                {
-                    b.Property<int>("PlayerTransferId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlayerTransferId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TransfersIn")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TransfersInEvent")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TransfersOut")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TransfersOutEvent")
-                        .HasColumnType("int");
-
-                    b.HasKey("PlayerTransferId");
-
-                    b.HasIndex("CreatedAt")
-                        .HasDatabaseName("IX_CreatedAt");
-
-                    b.HasIndex("PlayerId")
-                        .HasDatabaseName("idx_player_transfer_player");
-
-                    b.ToTable("PlayersTransfer", (string)null);
-                });
-
-            modelBuilder.Entity("Api.Models.PlayerModels.PlayerValue", b =>
-                {
-                    b.Property<int>("PlayerValueId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlayerValueId"));
-
-                    b.Property<int>("CostChangeEvent")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CostChangeStart")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("NowCost")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("SelectedByPercent")
-                        .HasColumnType("decimal(5, 2)");
-
-                    b.Property<decimal>("ValueForm")
-                        .HasColumnType("decimal(5, 2)");
-
-                    b.Property<decimal>("ValueSeason")
-                        .HasColumnType("decimal(5, 2)");
-
-                    b.HasKey("PlayerValueId");
-
-                    b.HasIndex("CreatedAt")
-                        .HasDatabaseName("IX_CreatedAt");
-
-                    b.HasIndex("PlayerId")
-                        .HasDatabaseName("idx_player_value_player");
-
-                    b.ToTable("PlayersValues", (string)null);
                 });
 
             modelBuilder.Entity("Api.Models.TeamModels.Team", b =>
@@ -402,28 +315,6 @@ namespace Api.Migrations
                     b.Navigation("player");
                 });
 
-            modelBuilder.Entity("Api.Models.PlayerModels.PlayerTransfer", b =>
-                {
-                    b.HasOne("Api.Models.PlayerModels.Player", "player")
-                        .WithMany("PlayerTransfers")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("player");
-                });
-
-            modelBuilder.Entity("Api.Models.PlayerModels.PlayerValue", b =>
-                {
-                    b.HasOne("Api.Models.PlayerModels.Player", "player")
-                        .WithMany("PlayerValues")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("player");
-                });
-
             modelBuilder.Entity("Api.Models.PlayerModels.ElementTypes", b =>
                 {
                     b.Navigation("Players");
@@ -434,10 +325,6 @@ namespace Api.Migrations
                     b.Navigation("PlayerPerformances");
 
                     b.Navigation("PlayerStatistics");
-
-                    b.Navigation("PlayerTransfers");
-
-                    b.Navigation("PlayerValues");
                 });
 
             modelBuilder.Entity("Api.Models.TeamModels.Team", b =>

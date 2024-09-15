@@ -8,8 +8,6 @@ namespace Api.Mapping
         static public PlayerDataForTrain MapToPlayerDataForTrain(this Player player)
         {
             var latestPerformance = player.PlayerPerformances.LastOrDefault();
-            var latestValue = player.PlayerValues.LastOrDefault();
-            var latestTransfer = player.PlayerTransfers.LastOrDefault();
             var latestStatistics = player.PlayerStatistics.LastOrDefault();
 
             return new PlayerDataForTrain
@@ -43,18 +41,14 @@ namespace Api.Mapping
                
 
                 // Value Data
-                NowCost = latestValue?.NowCost ?? 0,
-                CostChangeEvent = latestValue?.CostChangeEvent ?? 0,
-                CostChangeStart = latestValue?.CostChangeStart ?? 0,
-                SelectedByPercent = latestValue.SelectedByPercent,
-                ValueForm = latestValue.ValueForm,
-                ValueSeason = latestValue.ValueSeason,
+                NowCost = player.NowCost,
+                CostChangeEvent = player.CostChangeEvent,
+                CostChangeStart = player.CostChangeStart,
+                SelectedByPercent = player.SelectedByPercent,
+                ValueForm = player.ValueForm,
+                ValueSeason = player.ValueSeason,
 
                 // Transfer Data
-                TransfersIn = latestTransfer?.TransfersIn ?? 0,
-                TransfersInEvent = latestTransfer?.TransfersInEvent ?? 0,
-                TransfersOut = latestTransfer?.TransfersOut ?? 0,
-                TransfersOutEvent = latestTransfer?.TransfersOutEvent ?? 0,
 
                 // Statistics Data
                 Influence = latestStatistics.Influence,

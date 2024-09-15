@@ -84,12 +84,11 @@ namespace Api.Services
       
         }
 
-        public async Task InsertPlayersAndRelatedEntitiesAsync(IEnumerable<PlayerJsonForm> playerJsonForms)
+        public async Task InsertPlayersAndRelatedEntitiesAsync(IEnumerable<PlayerJsonForm> playerJsonForms, IEnumerable<PlayerStatAndPerJson> playerStatAndPerJsons)
         {
             List<Player> players = playerJsonForms.Select(p => p.MapToPlayer()).ToList();
-            List<PlayerStatAndPerJson>Performance = playerJsonForms.Select(p => p.playerStatAndPerJson).ToList();
-            List<PlayerPerformance> playerPerformances = Performance.Select(p => p.MapToPlayerPerformance()).ToList();
-            List<PlayerStatistics> playerStatistics =Performance.Select(p => p.MapPlayerStatistics()).ToList();
+            List<PlayerPerformance> playerPerformances = playerStatAndPerJsons.Select(p => p.MapToPlayerPerformance()).ToList();
+            List<PlayerStatistics> playerStatistics =playerStatAndPerJsons.Select(p => p.MapPlayerStatistics()).ToList();
 
             const int batchSize = 100;
             var playerList = players.ToList();

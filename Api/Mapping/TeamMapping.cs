@@ -21,6 +21,8 @@ namespace Api.Mapping
                     strength_attack_away = teamJson.strength_attack_away,
                     strength_defence_home = teamJson.strength_defence_home,
                     strength_defence_away = teamJson.strength_defence_away,
+
+                    Players = new List<Player>()
                 };
             }
 

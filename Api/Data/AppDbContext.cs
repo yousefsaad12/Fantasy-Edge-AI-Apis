@@ -52,16 +52,16 @@ namespace Api.Data
                 entity.Property(e => e.CostChangeEvent).IsRequired(false).HasColumnType("int");
                 entity.Property(e => e.CostChangeStart).IsRequired(false).HasColumnType("int");
                 
-                entity.Property(e => e.SelectedByPercent).IsRequired().HasColumnType("decimal(5, 2)");
+                entity.Property(e => e.SelectedByPercent).IsRequired(false).HasColumnType("decimal(5, 2)");
 
-                entity.Property(e => e.ValueForm).IsRequired().HasColumnType("decimal(5, 2)");
+                entity.Property(e => e.ValueForm).IsRequired(false).HasColumnType("decimal(5, 2)");
 
-                entity.Property(e => e.ValueSeason).IsRequired().HasColumnType("decimal(5, 2)");
+                entity.Property(e => e.ValueSeason).IsRequired(false).HasColumnType("decimal(5, 2)");
 
 
-                entity.HasOne(e => e.team)
+                entity.HasOne(p => p.team)
                       .WithMany(t => t.Players)
-                      .HasForeignKey(e => e.TeamId)
+                      .HasForeignKey(p => p.TeamId)
                       .IsRequired();
 
                 entity.HasOne(e => e.elementType)
@@ -119,7 +119,7 @@ namespace Api.Data
 
                 entity.Property(e => e.BonusPointsSystem).IsRequired().HasColumnType("int");
 
-                entity.Property(e => e.IsDreamTeam).IsRequired().HasColumnType("BOOLEAN");
+                entity.Property(e => e.IsDreamTeam).IsRequired().HasColumnType("BIT");
 
                 entity.Property(e => e.CreatedAt).IsRequired().HasColumnType("DateTime").HasDefaultValueSql("GETDATE()");
                
@@ -244,8 +244,6 @@ namespace Api.Data
             modelBuilder.Entity<PlayerPerformance>()
             .HasIndex(pp => pp.PlayerId)
             .HasDatabaseName("idx_player_performance_player");
-
-           
 
            
 

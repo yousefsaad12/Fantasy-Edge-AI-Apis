@@ -44,10 +44,11 @@ namespace Api.Services
                     teamsJsonForms = JsonConvert.DeserializeObject<List<TeamsJsonForm>>(apiData["teams"].ToString())
                 };
 
-                var playerStat = FetchPerformAsync("");
+                var playerStat = await FetchPerformAsync("https://fantasy.premierleague.com/api/event/1/live/");
+
 
                 await _teamServices.InsertTeamsAndRelatedEntitiesAsync(fantasyForm.teamsJsonForms).ConfigureAwait(false);
-                await _playerServices.InsertPlayersAndRelatedEntitiesAsync(fantasyForm.playerJsonForms).ConfigureAwait(false);
+                await _playerServices.InsertPlayersAndRelatedEntitiesAsync(fantasyForm.playerJsonForms, playerStat).ConfigureAwait(false);
                 
                 return fantasyForm.teamsJsonForms;
             }

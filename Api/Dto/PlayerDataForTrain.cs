@@ -36,12 +36,12 @@ namespace Api.Dto
     public int DreamTeamCount { get; set; }
 
     // Value Data
-    public int NowCost { get; set; }
-    public int CostChangeEvent { get; set; }
-    public int CostChangeStart { get; set; }
-    public decimal SelectedByPercent { get; set; }
-    public decimal ValueForm { get; set; }
-    public decimal ValueSeason { get; set; }
+    public int ? NowCost { get; set; }
+    public int ? CostChangeEvent { get; set; }
+    public int ? CostChangeStart { get; set; }
+    public decimal ? SelectedByPercent { get; set; }
+    public decimal ? ValueForm { get; set; }
+    public decimal ? ValueSeason { get; set; }
 
     // Transfer Data
     public int TransfersIn { get; set; }

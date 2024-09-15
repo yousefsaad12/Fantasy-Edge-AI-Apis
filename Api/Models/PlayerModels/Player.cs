@@ -17,15 +17,15 @@ namespace Api.Models.PlayerModels
         public DateTime ?  NewsAdded { get; set; }
         public int ? ChancePlayingNextRound { get; set; }
         public int ? ChancePlayingThisRound { get; set; }
+
+        public int ? NowCost { get; set; }
+        public int ? CostChangeEvent { get; set; }
+        public int ? CostChangeStart { get; set; }
+        public decimal ? SelectedByPercent { get; set; }
+        public decimal ? ValueForm { get; set; }
+        public decimal ? ValueSeason { get; set; }
         public int ElementTypeId { get; set; }
         public int TeamId { get; set; } 
-
-        public int NowCost { get; set; }
-        public int CostChangeEvent { get; set; }
-        public int CostChangeStart { get; set; }
-        public decimal SelectedByPercent { get; set; }
-        public decimal  ValueForm { get; set; }
-        public decimal ValueSeason { get; set; }
 
          // Navigation Properties
         public ElementTypes elementType { get; set; }

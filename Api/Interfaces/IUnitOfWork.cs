@@ -10,8 +10,6 @@ namespace Api.Interfaces
         IGenericRepository<ElementTypes> ElementsTypes { get; }
         IGenericRepository<PlayerPerformance> PlayersPerformance { get; }
         IGenericRepository<PlayerStatistics> PlayersStatistics { get; }
-        IGenericRepository<PlayerTransfer> PlayersTransfer { get; }
-        IGenericRepository<PlayerValue> PlayersValue { get; }
         IGenericRepository<Team> Teams { get; }
 
         public Task<int> Complete();
