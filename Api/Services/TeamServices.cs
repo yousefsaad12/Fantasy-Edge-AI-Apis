@@ -12,9 +12,6 @@ namespace Api.Services
             _logger = logger;
         }
 
-
-
-
         public async Task<bool> CreateTeam(Team team)
         {
             try

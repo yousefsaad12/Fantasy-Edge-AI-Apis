@@ -1,4 +1,4 @@
-using Api.Mapping;
+
 using Newtonsoft.Json;
 
 namespace Api.Services
@@ -9,24 +9,31 @@ namespace Api.Services
         private readonly ILogger<FetchingService> _logger;
         private readonly IPlayerServices _playerServices;
         private readonly ITeamsServices _teamServices;
-        public FetchingService(HttpClient httpClient, ILogger<FetchingService> logger, IPlayerServices playerServices, ITeamsServices teamServices)
+
+        private readonly IConfiguration _configuration;
+        public FetchingService(HttpClient httpClient, ILogger<FetchingService> logger, IPlayerServices playerServices, ITeamsServices teamServices, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _logger = logger;
             _playerServices = playerServices;
             _teamServices = teamServices;
+            _configuration = configuration;
         }
 
-        public async Task<ICollection<TeamsJsonForm>> FetchDataAsync(string url)
-        {
+        public async Task<ICollection<TeamsJsonForm>> FetchDataAsync(int _currentWeek)
+        {   
+            string url = _configuration.GetValue<string>("FantasyApiSettings:BaseUrl");
+
             try
-            {
+            {   
+               
+
                 _logger.LogInformation("Fetching data from {Url}", url);
 
-                var response = await _httpClient.GetAsync(url);
+                var response = await _httpClient.GetAsync(url).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode(); // Throws if the status code is not successful
 
-                var json = await response.Content.ReadAsStringAsync();
+                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 var apiData = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
 
@@ -44,7 +51,7 @@ namespace Api.Services
                     teamsJsonForms = JsonConvert.DeserializeObject<List<TeamsJsonForm>>(apiData["teams"].ToString())
                 };
 
-                var playerStat = await FetchPerformAsync("https://fantasy.premierleague.com/api/event/1/live/");
+                var playerStat = await FetchPerformAsync(_currentWeek).ConfigureAwait(false);;
 
 
                 await _teamServices.InsertTeamsAndRelatedEntitiesAsync(fantasyForm.teamsJsonForms).ConfigureAwait(false);
@@ -75,16 +82,20 @@ namespace Api.Services
         }
 
 
-        public async Task<ICollection<PlayerStatAndPerJson>> FetchPerformAsync(string url)
-        {
+        public async Task<ICollection<PlayerStatAndPerJson>> FetchPerformAsync(int _currentWeek)
+        {   
+            string url = _configuration.GetValue<string>("FantasyApiSettings:Live");
+            url += $"{_currentWeek}/live/";
+
             try
-            {
+            {   
+                
                 _logger.LogInformation("Fetching data from {Url}", url);
 
-                var response = await _httpClient.GetAsync(url);
+                var response = await _httpClient.GetAsync(url).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode(); // Throws if the status code is not successful
 
-                var json = await response.Content.ReadAsStringAsync();
+                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 var apiData = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
 

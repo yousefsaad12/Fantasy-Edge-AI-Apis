@@ -34,7 +34,7 @@ namespace Api.Services
                 }
 
                 
-                bool isSuccess = await _unitOfWork.Players.Create(player);
+                bool isSuccess = await _unitOfWork.Players.Create(player).ConfigureAwait(false);
 
                 if (isSuccess) _logger.LogInformation("Player successfully created: {FirstName} {SecondName}", player.FirstName, player.SecondName);
 
@@ -65,7 +65,7 @@ namespace Api.Services
 
                 Player ? player = await _unitOfWork.Players.GetByName(FirstName, SecondName,
                                                     p => p.PlayerPerformances,
-                                                    p => p.PlayerStatistics);
+                                                    p => p.PlayerStatistics).ConfigureAwait(false);
 
 
                 return player != null ? player : null;
@@ -80,7 +80,7 @@ namespace Api.Services
         public async Task<IEnumerable<Player>> ? GetPlayersAsync()
         {
             return await _unitOfWork.Players.GetAll(p => p.PlayerPerformances, 
-                                                    p => p.PlayerStatistics);
+                                                    p => p.PlayerStatistics).ConfigureAwait(false);
       
         }
 
@@ -103,7 +103,7 @@ namespace Api.Services
                     foreach (var player in batch)
                     {   
 
-                        Player existingPlayer = await GetPlayerbyName(player.FirstName, player.SecondName);
+                        Player existingPlayer = await GetPlayerbyName(player.FirstName, player.SecondName).ConfigureAwait(false);
 
                         var pp = playerPerformances.FirstOrDefault(p => p.PlayerId == player.PlayerId);
                         var ps = playerStatistics.FirstOrDefault(p => p.PlayerId == player.PlayerId);
@@ -116,9 +116,9 @@ namespace Api.Services
                             player.PlayerPerformances.Add(pp);
                             player.PlayerStatistics.Add(ps);
                             // Insert the new player into the database
-                            await CreatePlayer(player);
+                            await CreatePlayer(player).ConfigureAwait(false);
                         }
-                        else await UpdatePlayer(existingPlayer, player, pp, ps);
+                        else await UpdatePlayer(existingPlayer, player, pp, ps).ConfigureAwait(false);
 
 
                     }
@@ -158,12 +158,12 @@ namespace Api.Services
                     }
 
                     // Use PlayerHelper to update the existing player's properties with the new data
-                    await PlayerUpdateHelper.UpdateBasicPlayerProperties(existingPlayer, newPlayerData);
+                    await PlayerUpdateHelper.UpdateBasicPlayerProperties(existingPlayer, newPlayerData).ConfigureAwait(false);
 
                     existingPlayer.PlayerPerformances.Add(pp);
                     existingPlayer.PlayerStatistics.Add(ps);
                     // Save the changes to the repository
-                    bool isSuccess =  await _unitOfWork.Players.UpdateOne(existingPlayer);
+                    bool isSuccess =  await _unitOfWork.Players.UpdateOne(existingPlayer).ConfigureAwait(false);
 
                     if (isSuccess)
                     {
