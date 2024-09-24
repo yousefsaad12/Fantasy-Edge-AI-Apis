@@ -11,11 +11,8 @@ namespace Api.Models.PlayerModels
       public decimal ExpectedAssists { get; set; }  
       public decimal ExpectedGoalInvolvements { get; set; }  
       public decimal ExpectedGoalsConceded { get; set; }  
-      
-
-      public DateTime CreatedAt { get; set; }
+      public int GameWeek { get; set; }      
       public int PlayerId { get; set; }
-
 
       // Navigation Properties
 

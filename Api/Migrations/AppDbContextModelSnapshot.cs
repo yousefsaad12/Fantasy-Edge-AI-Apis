@@ -131,12 +131,10 @@ namespace Api.Migrations
                     b.Property<int>("CleanSheets")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValueSql("GETDATE()");
-
                     b.Property<int>("EventPoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GameWeek")
                         .HasColumnType("int");
 
                     b.Property<int>("GoalsConceded")
@@ -177,8 +175,8 @@ namespace Api.Migrations
 
                     b.HasKey("PlayerPerformanceId");
 
-                    b.HasIndex("CreatedAt")
-                        .HasDatabaseName("IX_CreatedAt");
+                    b.HasIndex("GameWeek")
+                        .HasDatabaseName("IX_GameWeek");
 
                     b.HasIndex("PlayerId")
                         .HasDatabaseName("idx_player_performance_player");
@@ -193,11 +191,6 @@ namespace Api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlayerStatisticsId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<decimal>("Creativity")
                         .HasColumnType("decimal(5, 2)");
@@ -214,6 +207,9 @@ namespace Api.Migrations
                     b.Property<decimal>("ExpectedGoalsConceded")
                         .HasColumnType("decimal(5, 2)");
 
+                    b.Property<int>("GameWeek")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("IctIndex")
                         .HasColumnType("decimal(5, 2)");
 
@@ -228,8 +224,8 @@ namespace Api.Migrations
 
                     b.HasKey("PlayerStatisticsId");
 
-                    b.HasIndex("CreatedAt")
-                        .HasDatabaseName("IX_CreatedAt");
+                    b.HasIndex("GameWeek")
+                        .HasDatabaseName("IX_GameWeek");
 
                     b.HasIndex("PlayerId")
                         .HasDatabaseName("idx_player_statistics_player");

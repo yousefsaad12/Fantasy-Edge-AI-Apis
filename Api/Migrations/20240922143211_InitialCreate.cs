@@ -105,8 +105,8 @@ namespace Api.Migrations
                     Bonus = table.Column<int>(type: "int", nullable: false),
                     BonusPointsSystem = table.Column<int>(type: "int", nullable: false),
                     IsDreamTeam = table.Column<bool>(type: "BIT", nullable: false),
-                    PlayerId = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "DateTime", nullable: false, defaultValueSql: "GETDATE()")
+                    GameWeek = table.Column<int>(type: "int", nullable: false),
+                    PlayerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,7 +133,7 @@ namespace Api.Migrations
                     ExpectedAssists = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     ExpectedGoalInvolvements = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
                     ExpectedGoalsConceded = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "DateTime", nullable: false, defaultValueSql: "GETDATE()"),
+                    GameWeek = table.Column<int>(type: "int", nullable: false),
                     PlayerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -168,9 +168,9 @@ namespace Api.Migrations
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CreatedAt",
+                name: "IX_GameWeek",
                 table: "PlayersPerformance",
-                column: "CreatedAt");
+                column: "GameWeek");
 
             migrationBuilder.CreateIndex(
                 name: "idx_player_statistics_player",
@@ -178,9 +178,9 @@ namespace Api.Migrations
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CreatedAt",
+                name: "IX_GameWeek",
                 table: "PlayersStatistics",
-                column: "CreatedAt");
+                column: "GameWeek");
         }
 
         /// <inheritdoc />

@@ -7,11 +7,11 @@ namespace Api.Services
         private readonly ILogger<DataFetchingBackgroundService> _logger;
         private readonly IServiceProvider _serviceProvider;
         private int _currentWeek;
-        public DataFetchingBackgroundService(ILogger<DataFetchingBackgroundService> logger, IServiceProvider _serviceProvider)
+        public DataFetchingBackgroundService(ILogger<DataFetchingBackgroundService> logger, IServiceProvider serviceProvider)
         {
             _logger = logger;
-            _serviceProvider = _serviceProvider;
-            _currentWeek = 5;
+            _serviceProvider = serviceProvider;
+            _currentWeek = 6;
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {

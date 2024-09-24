@@ -3,7 +3,7 @@ namespace Api.Mapping
 {
     public static class PlayerStatisticsMapping
     {
-        public static PlayerStatistics MapPlayerStatistics(this PlayerStatAndPerJson playerStatAndPerJson)
+        public static PlayerStatistics MapPlayerStatistics(this PlayerStatAndPerJson playerStatAndPerJson, int _currentWeek)
         {   
             try
             {
@@ -17,6 +17,7 @@ namespace Api.Mapping
                     ExpectedAssists = (decimal)playerStatAndPerJson.stats.expected_assists,
                     ExpectedGoalInvolvements = (decimal)playerStatAndPerJson.stats.expected_goal_involvements,
                     ExpectedGoalsConceded = (decimal)playerStatAndPerJson.stats.expected_goals_conceded,
+                    GameWeek = _currentWeek,
                     
                     PlayerId = playerStatAndPerJson.id 
                 };

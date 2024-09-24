@@ -3,7 +3,7 @@ namespace Api.Mapping
 {
     public  static class PlayerPerformanceMapping
     {
-         public static PlayerPerformance MapToPlayerPerformance(this PlayerStatAndPerJson playerStatAndPerJson)
+         public static PlayerPerformance MapToPlayerPerformance(this PlayerStatAndPerJson playerStatAndPerJson, int _currentWeek)
         {
             try
             {
@@ -25,6 +25,7 @@ namespace Api.Mapping
                     Bonus =playerStatAndPerJson.stats.bonus,
                     BonusPointsSystem = playerStatAndPerJson.stats.bps,
                     IsDreamTeam = playerStatAndPerJson.stats.in_dreamteam,
+                    GameWeek = _currentWeek,
                     PlayerId = playerStatAndPerJson.id  // Assuming `PlayerId` is mapped to `id`
                 };
             }

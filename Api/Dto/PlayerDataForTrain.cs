@@ -8,13 +8,13 @@ namespace Api.Dto
     public class PlayerDataForTrain
     {
     public int PlayerId { get; set; }
+
+    public int GameWeek { get; set; }
     public string FirstName { get; set; }
     public string SecondName { get; set; }
     public string WebName { get; set; }
-    public string Status { get; set; }
     public int? SquadNumber { get; set; }
-    public string News { get; set; }
-    public int ElementTypeId { get; set; } // Player type (e.g., 1: Goalkeeper, 2: Defender, 3: Midfielder, 4: Forward)
+    public int Position { get; set; } // Player type (e.g., 1: Goalkeeper, 2: Defender, 3: Midfielder, 4: Forward)
     public int TeamId { get; set; }
 
     // Performance Data

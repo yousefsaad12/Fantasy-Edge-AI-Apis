@@ -21,10 +21,10 @@ namespace Api.Models.PlayerModels
         public int Bonus { get; set; }
         public int BonusPointsSystem { get; set; }
         public bool IsDreamTeam  { get; set; }
+        public int GameWeek { get; set; }
 
         public int PlayerId { get; set; }
 
-        public DateTime CreatedAt { get; set; }
         
 
         // Navigation Properties

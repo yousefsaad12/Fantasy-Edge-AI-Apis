@@ -5,66 +5,73 @@ namespace Api.Mapping
 {
     static public class PlayerDataForTrainMapping
     {
-        static public PlayerDataForTrain MapToPlayerDataForTrain(this Player player)
+        static public List<PlayerDataForTrain> MapToPlayerDataForTrain(this Player player)
         {
-            var latestPerformance = player.PlayerPerformances.LastOrDefault();
-            var latestStatistics = player.PlayerStatistics.LastOrDefault();
+            var result = new List<PlayerDataForTrain>();
 
-            return new PlayerDataForTrain
+            // Ensure that PlayerPerformances is not null or empty
+            if (player.PlayerPerformances == null || !player.PlayerPerformances.Any())
             {
-                PlayerId = player.PlayerId,
-                FirstName = player.FirstName,
-                SecondName = player.SecondName,
-                WebName = player.WebName,
-                Status = player.Status,
-                SquadNumber = player.SquadNumber,
-                News = player.News,
-                ElementTypeId = player.ElementTypeId,
-                TeamId = player.TeamId,
+                return result; // Return empty list if no performances exist
+            }
 
-                // Performance Data
-                Minutes = latestPerformance?.Minutes ?? 0,
-                EventPoints = latestPerformance?.EventPoints ?? 0,
-                TotalPoints = latestPerformance?.TotalPoints ?? 0,
-                GoalsScored = latestPerformance?.GoalsScored ?? 0,
-                Assists = latestPerformance?.Assists ?? 0,
-                CleanSheets = latestPerformance?.CleanSheets ?? 0,
-                GoalsConceded = latestPerformance?.GoalsConceded ?? 0,
-                PenaltiesSaved = latestPerformance?.PenaltiesSaved ?? 0,
-                PenaltiesMissed = latestPerformance?.PenaltiesMissed ?? 0,
-                OwnGoals = latestPerformance?.OwnGoals ?? 0,
-                YellowCards = latestPerformance?.YellowCards ?? 0,
-                RedCards = latestPerformance?.RedCards ?? 0,
-                Saves = latestPerformance?.Saves ?? 0,
-                Bonus = latestPerformance?.Bonus ?? 0,
-                BonusPointsSystem = latestPerformance?.BonusPointsSystem ?? 0,
-               
+            foreach (var performance in player.PlayerPerformances)
+            {
+                // Find corresponding statistics for the performance based on CreatedAt
+                var statistics = player.PlayerStatistics?.FirstOrDefault(s => s.GameWeek == performance.GameWeek);
 
-                // Value Data
-                NowCost = player.NowCost,
-                CostChangeEvent = player.CostChangeEvent,
-                CostChangeStart = player.CostChangeStart,
-                SelectedByPercent = player.SelectedByPercent,
-                ValueForm = player.ValueForm,
-                ValueSeason = player.ValueSeason,
+                var playerDataForTrain = new PlayerDataForTrain
+                {
+                    PlayerId = player.PlayerId,
+                    GameWeek = performance.GameWeek,
+                    FirstName = player.FirstName,
+                    SecondName = player.SecondName,
+                    WebName = player.WebName,
+                    SquadNumber = player.SquadNumber,
+                    Position = player.ElementTypeId,
+                    TeamId = player.TeamId,
 
-                // Transfer Data
+                    // Performance Data
+                    Minutes = performance?.Minutes ?? 0,
+                    EventPoints = performance?.EventPoints ?? 0,
+                    TotalPoints = performance?.TotalPoints ?? 0,
+                    GoalsScored = performance?.GoalsScored ?? 0,
+                    Assists = performance?.Assists ?? 0,
+                    CleanSheets = performance?.CleanSheets ?? 0,
+                    GoalsConceded = performance?.GoalsConceded ?? 0,
+                    PenaltiesSaved = performance?.PenaltiesSaved ?? 0,
+                    PenaltiesMissed = performance?.PenaltiesMissed ?? 0,
+                    OwnGoals = performance?.OwnGoals ?? 0,
+                    YellowCards = performance?.YellowCards ?? 0,
+                    RedCards = performance?.RedCards ?? 0,
+                    Saves = performance?.Saves ?? 0,
+                    Bonus = performance?.Bonus ?? 0,
+                    BonusPointsSystem = performance?.BonusPointsSystem ?? 0,
 
-                // Statistics Data
-                Influence = latestStatistics.Influence,
-                Creativity = latestStatistics.Creativity,
-                Threat = latestStatistics.Threat,
-                IctIndex = latestStatistics.IctIndex,
-                ExpectedGoals = latestStatistics.ExpectedGoals,
-                ExpectedAssists = latestStatistics.ExpectedAssists,
-                ExpectedGoalInvolvements = latestStatistics.ExpectedGoalInvolvements,
-                ExpectedGoalsConceded = latestStatistics.ExpectedGoalsConceded,
+                    // Value Data
+                    NowCost = player.NowCost,
+                    CostChangeEvent = player.CostChangeEvent,
+                    CostChangeStart = player.CostChangeStart,
+                    SelectedByPercent = player.SelectedByPercent,
+                    ValueForm = player.ValueForm,
+                    ValueSeason = player.ValueSeason,
 
-                
-                
-                
-            };
+                    // Statistics Data
+                    Influence = statistics?.Influence ?? 0, // Use null-conditional to avoid exception if statistics is null
+                    Creativity = statistics?.Creativity ?? 0,
+                    Threat = statistics?.Threat ?? 0,
+                    IctIndex = statistics?.IctIndex ?? 0,
+                    ExpectedGoals = statistics?.ExpectedGoals ?? 0,
+                    ExpectedAssists = statistics?.ExpectedAssists ?? 0,
+                    ExpectedGoalInvolvements = statistics?.ExpectedGoalInvolvements ?? 0,
+                    ExpectedGoalsConceded = statistics?.ExpectedGoalsConceded ?? 0
+                };
 
+                result.Add(playerDataForTrain);
+            }
+
+           
+            return result;
         }
     }
 }

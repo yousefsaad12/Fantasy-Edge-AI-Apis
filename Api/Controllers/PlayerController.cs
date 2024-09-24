@@ -15,13 +15,13 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        [Route("playersData/train")]
+        [Route("playersdata/train")]
 
         public async Task<IActionResult> GetPlayersData()
         {
             var players = await _playerService.GetPlayersAsync();
 
-            var DataToTrain = players.Select(p => p.MapToPlayerDataForTrain());
+            var DataToTrain = players.SelectMany(p => p.MapToPlayerDataForTrain()).ToList();
 
             return Ok(DataToTrain);
         }

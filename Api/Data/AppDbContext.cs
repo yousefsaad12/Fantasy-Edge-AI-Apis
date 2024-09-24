@@ -121,10 +121,10 @@ namespace Api.Data
 
                 entity.Property(e => e.IsDreamTeam).IsRequired().HasColumnType("BIT");
 
-                entity.Property(e => e.CreatedAt).IsRequired().HasColumnType("DateTime").HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.GameWeek).IsRequired().HasColumnType("int");
                
-                entity.HasIndex(e => e.CreatedAt)
-                      .HasDatabaseName("IX_CreatedAt");
+                entity.HasIndex(e => e.GameWeek)
+                      .HasDatabaseName("IX_GameWeek");
 
                 entity.HasOne(e => e.player)
                       .WithMany(p => p.PlayerPerformances)
@@ -160,11 +160,10 @@ namespace Api.Data
 
                 entity.Property(e => e.ExpectedGoalsConceded).IsRequired().HasColumnType("decimal(5, 2)");
 
-                entity.Property(e => e.CreatedAt).IsRequired().HasColumnType("DateTime").HasDefaultValueSql("GETDATE()");
-
-
-                entity.HasIndex(e => e.CreatedAt)
-                      .HasDatabaseName("IX_CreatedAt");
+                entity.Property(e => e.GameWeek).IsRequired().HasColumnType("int");
+               
+                entity.HasIndex(e => e.GameWeek)
+                      .HasDatabaseName("IX_GameWeek");
 
                 entity.HasOne(e => e.player)
                       .WithMany(p => p.PlayerStatistics)
