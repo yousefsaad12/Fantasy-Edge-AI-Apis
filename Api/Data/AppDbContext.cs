@@ -261,7 +261,6 @@ namespace Api.Data
             .HasIndex(ps => ps.PlayerId)
             .HasDatabaseName("idx_player_statistics_player");
 
-          
         }
 
 
