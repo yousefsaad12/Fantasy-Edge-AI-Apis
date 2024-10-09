@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using Api.Models.PlayerModels;
 using Api.Models.TeamModels;
+using Api.Models.UserModel;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<User>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options):base (options) {}
 
@@ -14,6 +16,8 @@ namespace Api.Data
         public DbSet<PlayerStatistics> PlayerStatistics { get; set; }
         public DbSet<ElementTypes> ElementTypes { get; set; }
         public DbSet<Team> Teams { get; set; }
+
+        public DbSet<User> Users { get; set; }
        
 
 
@@ -244,7 +248,14 @@ namespace Api.Data
             .HasIndex(pp => pp.PlayerId)
             .HasDatabaseName("idx_player_performance_player");
 
-           
+             modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .HasDatabaseName("idx_userEmail");
+
+             modelBuilder.Entity<User>()
+            .HasIndex(u => u.UserName)
+            .HasDatabaseName("idx_UserName");
+
 
             modelBuilder.Entity<PlayerStatistics>()
             .HasIndex(ps => ps.PlayerId)

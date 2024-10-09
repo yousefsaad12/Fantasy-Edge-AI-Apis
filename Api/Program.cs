@@ -24,9 +24,9 @@ builder.Services.AddHttpClient();
 
 /////////// logger ////////////
 
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)  // Read the configuration from appsettings.json
-    .CreateLogger();
+//Log.Logger = new LoggerConfiguration()
+    //.ReadFrom.Configuration(builder.Configuration)  // Read the configuration from appsettings.json
+    //.CreateLogger();
 
 
 builder.Logging.ClearProviders();
@@ -44,7 +44,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/fantasy", async ([FromServices] IFetchingService fantasyService) =>
 {
     var url = "https://fantasy.premierleague.com/api/bootstrap-static/";
-    var data = await fantasyService.FetchDataAsync(3);  // Adjust model as necessary
+    var data = await fantasyService.FetchDataAsync(6);  // Adjust model as necessary
     return Results.Ok(data);
 });
 

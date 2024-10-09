@@ -26,8 +26,6 @@ namespace Api.Mapping
                     GameWeek = performance.GameWeek,
                     FirstName = player.FirstName,
                     SecondName = player.SecondName,
-                    WebName = player.WebName,
-                    SquadNumber = player.SquadNumber,
                     Position = player.ElementTypeId,
                     TeamId = player.TeamId,
 
