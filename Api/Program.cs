@@ -1,5 +1,3 @@
-
-
 using System.Text.Json.Serialization;
 using Api.Models.UserModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
