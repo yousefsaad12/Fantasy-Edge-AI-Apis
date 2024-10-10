@@ -16,3 +16,7 @@ global using System.Collections.Immutable;
 global using Api.Mapping;
 global using Api.Models.TeamModels;
 global using Api.Services;
+global using Api.Dto;
+global using Api.Models.UserModel;
+
+global using Microsoft.AspNetCore.Identity;

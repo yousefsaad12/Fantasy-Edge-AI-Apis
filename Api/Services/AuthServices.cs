@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Api.Models.UserModel;
-using Microsoft.AspNetCore.Identity;
 
 namespace Api.Services
 {
@@ -16,14 +10,22 @@ namespace Api.Services
             _userManager = userManager;
             _signInManager = signInManager;
         }
+
+        public async Task<bool> CheckExist(string email)
+        {
+            return await _userManager.FindByEmailAsync(email).ConfigureAwait(false) is not null;
+        }
+
         public Task<string> Login(string Email, string Password)
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> Register(User user)
+        public async Task<IdentityResult> Register(UserRequest userRequest)
         {
-             throw new NotImplementedException();
+            User user = userRequest.ToUser();
+
+            return await _userManager.CreateAsync(user, userRequest.passWord).ConfigureAwait(false);
         }
     }
 }
