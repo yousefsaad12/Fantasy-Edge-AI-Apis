@@ -21,6 +21,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        [Route("Register")]
         public async Task<IActionResult> Register([FromBody] UserRequest userRequest)
         {
             if(!ModelState.IsValid) return BadRequest(userRequest);

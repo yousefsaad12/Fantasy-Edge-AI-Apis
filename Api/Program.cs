@@ -14,6 +14,8 @@ builder.Services.AddScoped<IFetchingService, FetchingService>();
 builder.Services.AddScoped<IPlayerServices, PlayerServices>();
 builder.Services.AddScoped<ITeamsServices, TeamServices>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IAuthServices, AuthServices>();
+builder.Services.AddScoped<ITokenServices, TokenServices>();
 
 builder.Services.AddDbContext<AppDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -33,65 +35,6 @@ builder.Services.AddHttpClient();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog();
-
-
-builder.Services.AddIdentity<User,IdentityRole>(options => {
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequiredLength = 12;
-    
-}).AddEntityFrameworkStores<AppDbContext>()
-  .AddDefaultTokenProviders();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.MapGet("/fantasy", async ([FromServices] IFetchingService fantasyService) =>
-{
-    var url = "https://fantasy.premierleague.com/api/bootstrap-static/";
-    var data = await fantasyService.FetchDataAsync(6);  // Adjust model as necessary
-    return Results.Ok(data);
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.MapGet("/stat", async ([FromServices] IFetchingService fantasyService) =>
-{
-    var url = "https://fantasy.premierleague.com/api/event/3/live/";
-    var data = await fantasyService.FetchPerformAsync(1);  // Adjust model as necessary
-    return Results.Ok(data);
-});
-
-
-app.MapGet("/fantasy/players", async ([FromServices] IPlayerServices playerServices) =>
-{
-    
-    var data = await playerServices.GetPlayersAsync();  // Adjust model as necessary
-    return Results.Ok(data);
-});
 
 
 builder.Services.AddAuthentication(options => {
@@ -117,6 +60,55 @@ builder.Services.AddAuthentication(options => {
         
     };
 });
+
+
+builder.Services.AddIdentity<User,IdentityRole>(options => {
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 12;
+    
+}).AddEntityFrameworkStores<AppDbContext>()
+  .AddDefaultTokenProviders();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+
+
+app.MapGet("/fantasy", async ([FromServices] IFetchingService fantasyService) =>
+{
+    var url = "https://fantasy.premierleague.com/api/bootstrap-static/";
+    var data = await fantasyService.FetchDataAsync(6);  // Adjust model as necessary
+    return Results.Ok(data);
+});
+
+
+
+
+app.MapGet("/stat", async ([FromServices] IFetchingService fantasyService) =>
+{
+    var url = "https://fantasy.premierleague.com/api/event/3/live/";
+    var data = await fantasyService.FetchPerformAsync(1);  // Adjust model as necessary
+    return Results.Ok(data);
+});
+
+
+app.MapGet("/fantasy/players", async ([FromServices] IPlayerServices playerServices) =>
+{
+    
+    var data = await playerServices.GetPlayersAsync();  // Adjust model as necessary
+    return Results.Ok(data);
+});
+
+
 
 
 app.UseHttpsRedirection();
