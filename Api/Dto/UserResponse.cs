@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Api.Dto
 {
@@ -10,5 +6,7 @@ namespace Api.Dto
          public string userName { get; set; }
          public string email { get; set; }
          public string token { get; set; }
+
+         public string Message { get; set; }
     }
 }

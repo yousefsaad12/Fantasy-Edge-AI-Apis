@@ -19,15 +19,15 @@ namespace Api.Services
         }
 
         
-        public string CreateToken(UserRequest userRequest)
+        public string CreateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
             
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Email, userRequest.email),
-                new Claim(JwtRegisteredClaimNames.GivenName, userRequest.userName),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.GivenName, user.UserName),
             };
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

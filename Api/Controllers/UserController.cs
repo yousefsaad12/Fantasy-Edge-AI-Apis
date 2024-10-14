@@ -33,9 +33,28 @@ namespace Api.Controllers
 
             var results = await _authServices.Register(userRequest).ConfigureAwait(false);
 
-            if(results.Succeeded) return Ok(new UserResponse { userName = userRequest.userName, email = userRequest.email, token =  _tokenService.CreateToken(userRequest) });
+            if(results.Succeeded) return Ok(new UserResponse { userName = userRequest.userName, email = userRequest.email, token =  _tokenService.CreateToken(userRequest.ToUser()) });
 
             return StatusCode(500, results.Errors);
+        }
+
+
+        [HttpPost]
+        [Route("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginReq request, CancellationToken cancellationToken)
+        {
+            if(!ModelState.IsValid) return BadRequest(request);
+
+            var response = await _authServices.Login(request, cancellationToken).ConfigureAwait(false);
+
+            if(response is null) return Unauthorized("Invalid Email or Password");
+
+            UserResponse userResponse = response.ToUserResponse();
+
+            userResponse.token = _tokenService.CreateToken(response);
+            userResponse.Message = "Login Successfull!";
+
+            return Ok(userResponse);
         }
 
 

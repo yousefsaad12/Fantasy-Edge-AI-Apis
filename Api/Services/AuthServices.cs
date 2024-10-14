@@ -1,14 +1,19 @@
 
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 namespace Api.Services
 {
     public class AuthServices : IAuthServices
     {   
         private readonly UserManager<User> _userManager;
         private readonly SignInManager <User> _signInManager;
-        public AuthServices(UserManager<User> userManager, SignInManager<User> signInManager)
+
+        private readonly IUnitOfWork _unitOfWork;
+        public AuthServices(UserManager<User> userManager, SignInManager<User> signInManager, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<bool> CheckExist(string email)
@@ -16,9 +21,18 @@ namespace Api.Services
             return await _userManager.FindByEmailAsync(email).ConfigureAwait(false) is not null;
         }
 
-        public Task<string> Login(string Email, string Password)
+
+        public async Task<User> Login(LoginReq loginReq, CancellationToken  cancellationToken)
         {
-            throw new NotImplementedException();
+            User user = await _unitOfWork.Users.GetByEmail(loginReq.email, cancellationToken).ConfigureAwait(false);
+
+            if (user is null) return null;
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginReq.passWord, false).ConfigureAwait(false);
+
+            if(!result.Succeeded) return null;
+
+            return user;
         }
 
         public async Task<IdentityResult> Register(UserRequest userRequest)

@@ -1,4 +1,5 @@
 
+using Microsoft.EntityFrameworkCore;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {   
@@ -100,5 +101,17 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
             _logger.LogError(ex, "An error occurred while updating entity: {@Entity}", entity);
             return false;
         }
+    }
+
+    public async Task<T?> GetByEmail(string email, CancellationToken cancellationToken)
+    {
+       
+        var emailProperty = typeof(T).GetProperty("Email");
+
+        if (emailProperty == null)
+            throw new InvalidOperationException($"Type {typeof(T).Name} does not contain a property named 'Email'.");
+
+       
+        return await _context.Set<T>().FirstOrDefaultAsync(e => EF.Property<string>(e, "Email") == email, cancellationToken);
     }
 }
