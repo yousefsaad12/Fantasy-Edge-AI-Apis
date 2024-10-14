@@ -12,6 +12,8 @@ namespace Api.Interfaces
         IGenericRepository<PlayerStatistics> PlayersStatistics { get; }
         IGenericRepository<Team> Teams { get; }
 
+        IGenericRepository<User> Users { get; }
+
         public Task<int> Complete();
     }
 }

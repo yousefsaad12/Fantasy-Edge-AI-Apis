@@ -14,10 +14,13 @@ namespace Api.Controllers
     {   
         private readonly IAuthServices _authServices;
         private readonly ITokenServices _tokenService;
-        public UserController(IAuthServices authServices, ITokenServices tokenServices)
+
+        private readonly IUnitOfWork _unitOfWork;
+        public UserController(IAuthServices authServices, ITokenServices tokenServices, IUnitOfWork unitOfWork)
         {
             _authServices = authServices;
             _tokenService = tokenServices;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
@@ -35,6 +38,16 @@ namespace Api.Controllers
             return StatusCode(500, results.Errors);
         }
 
+
+        [HttpGet]
+        [Route("users")]
+        public async Task<IActionResult> AllUsers()
+        {
+
+            var allUsers = await _unitOfWork.Users.GetAll().ConfigureAwait(false);
+
+            return Ok(allUsers.Select(u => u.ToUserResponse()));
+        }
 
     }
 }

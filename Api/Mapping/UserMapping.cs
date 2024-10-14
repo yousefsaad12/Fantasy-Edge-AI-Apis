@@ -16,5 +16,14 @@ namespace Api.Mapping
                 Email = userRequest.email,
             };
         }
+
+        public static UserResponse ToUserResponse(this User user)
+        {
+            return new UserResponse
+            {
+                userName = user.UserName,
+                email = user.Email,
+            };
+        }
     }
 }

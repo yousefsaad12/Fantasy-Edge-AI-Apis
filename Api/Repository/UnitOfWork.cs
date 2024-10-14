@@ -12,6 +12,7 @@ namespace Api.Repository
         public IGenericRepository<PlayerPerformance> PlayersPerformance { get; private set; }
         public IGenericRepository<PlayerStatistics> PlayersStatistics { get; private set; }
         public IGenericRepository<Team> Teams { get; private set; }
+         public IGenericRepository<User> Users { get; private set; }
 
         public UnitOfWork(AppDbContext context, ILoggerFactory loggerFactory)
         {
@@ -23,6 +24,7 @@ namespace Api.Repository
             PlayersPerformance = new GenericRepository<PlayerPerformance>(_context, _loggerFactory.CreateLogger<GenericRepository<PlayerPerformance>>());
             PlayersStatistics = new GenericRepository<PlayerStatistics>(_context, _loggerFactory.CreateLogger<GenericRepository<PlayerStatistics>>());
             Teams = new GenericRepository<Team>(_context, _loggerFactory.CreateLogger<GenericRepository<Team>>());
+            Users = new GenericRepository<User>(_context,_loggerFactory.CreateLogger<GenericRepository<User>>());
         }
 
         public async Task<int> Complete()
