@@ -30,7 +30,8 @@ namespace Api.Services
                 new Claim(JwtRegisteredClaimNames.GivenName, user.UserName),
             };
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
 
              var tokenDescrip = new SecurityTokenDescriptor
             {
