@@ -23,24 +23,49 @@ namespace Api.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpPost]
-        [Route("Register")]
+        [Route("register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRequest userRequest)
         {
-            if(!ModelState.IsValid) return BadRequest(userRequest);
+            try
+            {
+                    // Validate the incoming request
+                if (!ModelState.IsValid)return BadRequest(new { Message = "Invalid data", Errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+                
+                if (await _authServices.CheckExist(userRequest.email).ConfigureAwait(false)) return BadRequest(new { Message = "This email is already in use" });
+                    
+                var results = await _authServices.Register(userRequest).ConfigureAwait(false);
 
-            if(await _authServices.CheckExist(userRequest.email).ConfigureAwait(false)) return BadRequest("This email already used");
+                if (results.Succeeded)
+                {
+                        // Create and return the token
+                    var token = _tokenService.CreateToken(userRequest.ToUser());
+                    return Ok(new UserResponse
+                    {
+                            userName = userRequest.userName,
+                            email = userRequest.email,
+                            token = token
+                    });
+                }
 
-            var results = await _authServices.Register(userRequest).ConfigureAwait(false);
+                    
+                return StatusCode(500, new
+                {
+                    Message = "Registration failed",
+                    Errors = results.Errors
+                });
+            }
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine($"Error during registration: {ex.Message}");
 
-            if(results.Succeeded) return Ok(new UserResponse { userName = userRequest.userName, email = userRequest.email, token =  _tokenService.CreateToken(userRequest.ToUser()) });
-
-            return StatusCode(500, results.Errors);
+                return StatusCode(500, new { Message = "An unexpected error occurred", Details = ex.Message });
+            }
         }
 
-
         [HttpPost]
-        [Route("Login")]
+        [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginReq request, CancellationToken cancellationToken)
         {
             if(!ModelState.IsValid) return BadRequest(request);

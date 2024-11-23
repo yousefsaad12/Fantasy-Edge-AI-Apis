@@ -24,6 +24,7 @@ builder.Services.AddDbContext<AppDbContext>(options => {
 
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
+
 builder.Services.AddHttpClient();
 
 /////////// logger ////////////
@@ -72,7 +73,29 @@ builder.Services.AddIdentity<User,IdentityRole>(options => {
 }).AddEntityFrameworkStores<AppDbContext>()
   .AddDefaultTokenProviders();
 
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // Replace with your frontend's URL
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+
+// Apply CORS policy
+
+
+
 var app = builder.Build();
+
+
+
+app.UseCors("AllowSpecificOrigin");
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -107,7 +130,6 @@ app.MapGet("/fantasy/players", async ([FromServices] IPlayerServices playerServi
     var data = await playerServices.GetPlayersAsync();  // Adjust model as necessary
     return Results.Ok(data);
 });
-
 
 
 

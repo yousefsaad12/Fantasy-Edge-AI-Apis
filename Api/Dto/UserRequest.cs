@@ -13,6 +13,6 @@ namespace Api.Dto
 
         [Required (ErrorMessage = "Password is required")]
         [MaxLength(50, ErrorMessage = "Password must but not less than 12 char")]
-        public string passWord { get; set; }
+        public string password { get; set; }
     }
 }

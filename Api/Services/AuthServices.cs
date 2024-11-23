@@ -1,5 +1,4 @@
 
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Api.Services
 {
@@ -39,7 +38,7 @@ namespace Api.Services
         {
             User user = userRequest.ToUser();
 
-            return await _userManager.CreateAsync(user, userRequest.passWord).ConfigureAwait(false);
+            return await _userManager.CreateAsync(user, userRequest.password).ConfigureAwait(false);
         }
     }
 }
