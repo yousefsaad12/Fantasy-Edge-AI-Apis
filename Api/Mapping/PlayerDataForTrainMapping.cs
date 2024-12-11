@@ -62,7 +62,14 @@ namespace Api.Mapping
                     ExpectedGoals = statistics?.ExpectedGoals ?? 0,
                     ExpectedAssists = statistics?.ExpectedAssists ?? 0,
                     ExpectedGoalInvolvements = statistics?.ExpectedGoalInvolvements ?? 0,
-                    ExpectedGoalsConceded = statistics?.ExpectedGoalsConceded ?? 0
+                    ExpectedGoalsConceded = statistics?.ExpectedGoalsConceded ?? 0,
+
+                    strength_overall_home = player.team.strength_overall_home,
+                    strength_overall_away = player.team.strength_overall_away,
+                    strength_attack_home = player.team.strength_attack_home,
+                    strength_attack_away = player.team.strength_attack_away,
+                    strength_defence_home = player.team.strength_defence_home,
+                    strength_defence_away = player.team.strength_defence_away,
                 };
 
                 result.Add(playerDataForTrain);

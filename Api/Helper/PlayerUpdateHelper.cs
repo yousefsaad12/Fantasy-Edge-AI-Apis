@@ -2,7 +2,7 @@ namespace Api.Services
 {
     public static class PlayerUpdateHelper
     {
-        public static async Task UpdateBasicPlayerProperties(Player existingPlayer, Player updatedPlayer)
+        public static void UpdateBasicPlayerProperties(Player existingPlayer, Player updatedPlayer)
         {   
             try
             {
@@ -23,9 +23,8 @@ namespace Api.Services
                 existingPlayer.SelectedByPercent = updatedPlayer.SelectedByPercent;
                 existingPlayer.ValueForm = updatedPlayer.ValueForm;
                 existingPlayer.ValueSeason = updatedPlayer.ValueSeason;
+                existingPlayer.PlayerId = updatedPlayer.PlayerId;   
 
-                if(existingPlayer.PlayerId != updatedPlayer.PlayerId)
-                existingPlayer.PlayerId = updatedPlayer.PlayerId;
             }
 
               catch (Exception ex)

@@ -46,7 +46,7 @@ namespace Api.Repository
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context?.Dispose();
         }
     }
 }

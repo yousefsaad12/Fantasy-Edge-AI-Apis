@@ -20,14 +20,13 @@ namespace Api.Services
             _configuration = configuration;
         }
 
-        public async Task<ICollection<TeamsJsonForm>> FetchDataAsync(int _currentWeek)
+        public async Task<ICollection<PlayerStatAndPerJson>> FetchDataAsync(int _currentWeek)
         {   
             string url = _configuration.GetValue<string>("FantasyApiSettings:BaseUrl");
 
             try
             {   
                
-
                 _logger.LogInformation("Fetching data from {Url}", url);
 
                 var response = await _httpClient.GetAsync(url).ConfigureAwait(false);
@@ -51,13 +50,13 @@ namespace Api.Services
                     teamsJsonForms = JsonConvert.DeserializeObject<List<TeamsJsonForm>>(apiData["teams"].ToString())
                 };
 
-                var playerStat = await FetchPerformAsync(_currentWeek).ConfigureAwait(false);;
+                var playerStat = await FetchPerformAsync(_currentWeek).ConfigureAwait(false);
 
 
                 await _teamServices.InsertTeamsAndRelatedEntitiesAsync(fantasyForm.teamsJsonForms).ConfigureAwait(false);
                 await _playerServices.InsertPlayersAndRelatedEntitiesAsync(fantasyForm.playerJsonForms, playerStat, _currentWeek).ConfigureAwait(false);
                 
-                return fantasyForm.teamsJsonForms;
+                return playerStat;
             }
             catch (HttpRequestException httpEx)
             {

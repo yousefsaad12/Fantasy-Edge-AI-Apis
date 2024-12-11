@@ -1,5 +1,8 @@
 
 
+using System.Text;
+using Newtonsoft.Json;
+
 namespace Api.Services
 {
     public class PlayerServices : IPlayerServices
@@ -7,8 +10,13 @@ namespace Api.Services
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<PlayerServices> _logger;
-        public PlayerServices(IUnitOfWork unitOfWork, ILogger<PlayerServices> logger)
-        {
+
+        private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient;
+        public PlayerServices(IUnitOfWork unitOfWork,IConfiguration configuration ,HttpClient httpClient , ILogger<PlayerServices> logger)
+        {   
+            _configuration = configuration;
+            _httpClient = httpClient;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -68,7 +76,7 @@ namespace Api.Services
                                                     p => p.PlayerStatistics).ConfigureAwait(false);
 
 
-                return player != null ? player : null;
+                return player is null ? null : player;
             }
                catch(Exception ex)
             {
@@ -76,93 +84,141 @@ namespace Api.Services
             }
         }
 
-    
         public async Task<IEnumerable<Player>> ? GetPlayersAsync()
         {
             return await _unitOfWork.Players.GetAll(p => p.PlayerPerformances, 
-                                                    p => p.PlayerStatistics).ConfigureAwait(false);
+                                                    p => p.PlayerStatistics, p => p.team).ConfigureAwait(false);
       
         }
 
-        public async Task InsertPlayersAndRelatedEntitiesAsync(IEnumerable<PlayerJsonForm> playerJsonForms, IEnumerable<PlayerStatAndPerJson> playerStatAndPerJsons, int _currentWeek)
+        public async Task<PlayerPredictions> GetPrediction(PlayerNameRequest playerPredictionReq)
         {
-            List<Player> players = playerJsonForms.Select(p => p.MapToPlayer()).ToList();
-            List<PlayerPerformance> playerPerformances = playerStatAndPerJsons.Select(p => p.MapToPlayerPerformance(_currentWeek)).ToList();
-            List<PlayerStatistics> playerStatistics =playerStatAndPerJsons.Select(p => p.MapPlayerStatistics(_currentWeek)).ToList();
+            try
+            {
+                string baseUrl = _configuration.GetValue<string>("FantasyApiSettings:Predict");
+
+                string jsonBody = JsonConvert.SerializeObject(playerPredictionReq);
+
+                var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync(baseUrl, content); 
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    _logger.LogInformation("Data fetched successfully: {ResponseContent}", responseContent);
+
+                    var prediction = JsonConvert.DeserializeObject<PlayerPredictions>(responseContent);
+                    Console.WriteLine(prediction);
+                    return prediction; // Return the deserialized data
+                }
+                else
+                {
+                        _logger.LogError("Request failed. Status Code: {StatusCode}", response.StatusCode);
+                        string errorResponse = await response.Content.ReadAsStringAsync();
+                        _logger.LogError("Error Response: {ErrorResponse}", errorResponse);
+
+                        return null;
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                    // Handles any issues with the HTTP request (e.g., connectivity issues)
+                _logger.LogError(httpEx, "HTTP request error occurred.");
+                return null; // Return null or handle it based on your needs
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                    // Handles timeout exceptions
+                _logger.LogError(timeoutEx, "The request timed out.");
+                return null; // Return null or handle it based on your needs
+            }
+            catch (Exception ex)
+            {
+                    // Handles other unexpected errors
+                _logger.LogError(ex, "An unexpected error occurred.");
+                return null; // Return null or handle it based on your needs
+            }
+    }
+
+
+        public async Task InsertPlayersAndRelatedEntitiesAsync(IEnumerable<PlayerJsonForm> playerJsonForms, IEnumerable<PlayerStatAndPerJson> playerStatAndPerJsons, int currentWeek)
+    {
+            var players = playerJsonForms.Select(p => p.MapToPlayer()).ToList();
+
+            // Map PlayerId to Performance and Statistics
+            var playerPerformances = playerStatAndPerJsons
+                .Select(p => p.MapToPlayerPerformance(currentWeek))
+                .ToDictionary(pp => pp.PlayerId);
+
+            var playerStatistics = playerStatAndPerJsons
+                .Select(p => p.MapPlayerStatistics(currentWeek))
+                .ToDictionary(ps => ps.PlayerId);
 
             const int batchSize = 100;
-            var playerList = players.ToList();
-          try{
 
-             // await _genericRepo.BeginTransactionAsync();
-
-                for (int i = 0; i < playerList.Count; i += batchSize)
+            try
+            {
+                for (int i = 0; i < players.Count; i += batchSize)
                 {
-                    var batch = playerList.Skip(i).Take(batchSize).ToList();
+                    var batch = players.Skip(i).Take(batchSize).ToList();
 
                     foreach (var player in batch)
-                    {   
-
-                        Player existingPlayer = await GetPlayerbyName(player.FirstName, player.SecondName).ConfigureAwait(false);
-
-                        var pp = playerPerformances.FirstOrDefault(p => p.PlayerId == player.PlayerId);
-                        var ps = playerStatistics.FirstOrDefault(p => p.PlayerId == player.PlayerId);
-
-
-
-                        if(existingPlayer is null)
+                    {
+                        // Skip processing if performance or statistics are not found
+                        if (!playerPerformances.TryGetValue(player.PlayerId, out var pp) || 
+                            !playerStatistics.TryGetValue(player.PlayerId, out var ps))
                         {
+                            _logger.LogWarning(
+                                "Skipping PlayerId {PlayerId} due to missing performance or statistics data.", 
+                                player.PlayerId);
+                            continue;
+                        }
 
+                        var existingPlayer = await GetPlayerbyName(player.FirstName, player.SecondName);
+
+                        if (existingPlayer is null)
+                        {
+                            // Add new player
                             player.PlayerPerformances.Add(pp);
                             player.PlayerStatistics.Add(ps);
-                            // Insert the new player into the database
                             await CreatePlayer(player).ConfigureAwait(false);
                         }
-                        else await UpdatePlayer(existingPlayer, player, pp, ps).ConfigureAwait(false);
-
-
+                        else
+                        {
+                            // Update existing player
+                            await UpdatePlayer(existingPlayer, player, pp, ps).ConfigureAwait(false);
+                        }
                     }
                 }
-                // Save the changes for the current batch
-                //await _genericRepo.CommitTransactionAsync();
+
                 _logger.LogInformation("All players inserted/updated successfully.");
-
             }
-
             catch (Exception ex)
-            {   
-                //await _genericRepo.RollbackTransactionAsync();
+            {
                 _logger.LogError(ex, "An error occurred while inserting/updating players.");
                 throw;
             }
-
-        }
+    }
 
 
             public async Task<bool> UpdatePlayer(Player existingPlayer, Player newPlayerData, PlayerPerformance pp, PlayerStatistics ps)
             {
                 try
                 {
-                    // Ensure the new player data has valid names and status
-                    if (string.IsNullOrWhiteSpace(newPlayerData.FirstName) || string.IsNullOrWhiteSpace(newPlayerData.SecondName) || string.IsNullOrWhiteSpace(newPlayerData.Status))
+                    if (string.IsNullOrWhiteSpace(newPlayerData.FirstName) || string.IsNullOrWhiteSpace(newPlayerData.SecondName))
                     {
                         _logger.LogWarning("Attempted to update a player with invalid names: {FirstName} {SecondName} {Status}", newPlayerData.FirstName, newPlayerData.SecondName, newPlayerData.Status);
                         throw new ArgumentException("Player names cannot be null or empty.");
                     }
+                    
+                    if(existingPlayer is null) throw new ArgumentNullException(nameof(existingPlayer), $"player is null");
+                    PlayerUpdateHelper.UpdateBasicPlayerProperties(existingPlayer, newPlayerData);
 
-                    // Check if the existing player is valid
-                    if (existingPlayer is null)
-                    {
-                        _logger.LogWarning("Existing player is null, update cannot proceed.");
-                        return false;
-                    }
-
-                    // Use PlayerHelper to update the existing player's properties with the new data
-                    await PlayerUpdateHelper.UpdateBasicPlayerProperties(existingPlayer, newPlayerData).ConfigureAwait(false);
-
-                    existingPlayer.PlayerPerformances.Add(pp);
-                    existingPlayer.PlayerStatistics.Add(ps);
-                    // Save the changes to the repository
+                    if(pp is not null && !existingPlayer.PlayerPerformances.Any(p => p.GameWeek == pp.GameWeek)) existingPlayer.PlayerPerformances.Add(pp);
+                    
+                    if(ps is not null && !existingPlayer.PlayerStatistics.Any(p => p.GameWeek == ps.GameWeek)) existingPlayer.PlayerStatistics.Add(ps);
+                  
                     bool isSuccess =  await _unitOfWork.Players.UpdateOne(existingPlayer).ConfigureAwait(false);
 
                     if (isSuccess)

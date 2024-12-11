@@ -10,5 +10,7 @@ namespace Api.Interfaces
         public Task<bool> CreatePlayer(Player player);
         public  Task InsertPlayersAndRelatedEntitiesAsync(IEnumerable<PlayerJsonForm> playerJsonForms, IEnumerable<PlayerStatAndPerJson> playerStatAndPerJsons, int _currentWeek);
         public  Task<bool> UpdatePlayer(Player existingPlayer, Player newPlayerData, PlayerPerformance pp, PlayerStatistics ps);
+
+        public Task<PlayerPredictions> GetPrediction(PlayerNameRequest playerPredictionReq);
     }
 }

@@ -107,18 +107,31 @@ if (app.Environment.IsDevelopment())
 
 
 app.MapGet("/fantasy", async ([FromServices] IFetchingService fantasyService) =>
-{
-    var url = "https://fantasy.premierleague.com/api/bootstrap-static/";
-    var data = await fantasyService.FetchDataAsync(6);  // Adjust model as necessary
-    return Results.Ok(data);
+{   
+    for(int i = 14; i <= 15; i++)
+    {
+        await fantasyService.FetchDataAsync(i).ConfigureAwait(false);
+    }
+    return Results.Ok("data has been fetched");
 });
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 app.MapGet("/stat", async ([FromServices] IFetchingService fantasyService) =>
 {
-    var url = "https://fantasy.premierleague.com/api/event/3/live/";
     var data = await fantasyService.FetchPerformAsync(1);  // Adjust model as necessary
     return Results.Ok(data);
 });

@@ -59,5 +59,12 @@ namespace Api.Dto
     public decimal GoalsConcededPer90 { get; set; }
     public decimal StartsPer90 { get; set; }
     public decimal CleanSheetsPer90 { get; set; }
+
+    public int strength_overall_home {get; set;}
+    public int strength_overall_away {get; set;}
+    public int strength_attack_home {get; set;}
+    public int strength_attack_away {get; set;}
+    public int strength_defence_home {get; set;}
+    public int strength_defence_away {get; set;}
     }
 }

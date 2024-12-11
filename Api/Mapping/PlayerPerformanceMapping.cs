@@ -26,7 +26,7 @@ namespace Api.Mapping
                     BonusPointsSystem = playerStatAndPerJson.stats.bps,
                     IsDreamTeam = playerStatAndPerJson.stats.in_dreamteam,
                     GameWeek = _currentWeek,
-                    PlayerId = playerStatAndPerJson.id  // Assuming `PlayerId` is mapped to `id`
+                    PlayerId = playerStatAndPerJson.id
                 };
             }
             catch (Exception e)
