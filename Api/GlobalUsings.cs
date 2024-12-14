@@ -12,11 +12,12 @@ global using Api.Models.FetchingModels;
 global using Serilog;
 global using Api.Repository;
 global using System.ComponentModel.DataAnnotations;
-global using System.Collections.Immutable;
 global using Api.Mapping;
 global using Api.Models.TeamModels;
-global using Api.Services;
 global using Api.Dto;
 global using Api.Models.UserModel;
-
 global using Microsoft.AspNetCore.Identity;
+global using System.Text.Json.Serialization;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.IdentityModel.Tokens;
+

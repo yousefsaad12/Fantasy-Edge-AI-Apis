@@ -1,8 +1,3 @@
-using System.Text.Json.Serialization;
-using Api.Models.UserModel;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +11,7 @@ builder.Services.AddScoped<ITeamsServices, TeamServices>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthServices, AuthServices>();
 builder.Services.AddScoped<ITokenServices, TokenServices>();
+builder.Services.AddScoped<IModelServices, ModelServices>();
 
 builder.Services.AddDbContext<AppDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -86,10 +82,6 @@ builder.Services.AddCors(options =>
 });
 
 
-// Apply CORS policy
-
-
-
 var app = builder.Build();
 
 
@@ -103,46 +95,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-
-
-app.MapGet("/fantasy", async ([FromServices] IFetchingService fantasyService) =>
-{   
-    for(int i = 14; i <= 15; i++)
-    {
-        await fantasyService.FetchDataAsync(i).ConfigureAwait(false);
-    }
-    return Results.Ok("data has been fetched");
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.MapGet("/stat", async ([FromServices] IFetchingService fantasyService) =>
-{
-    var data = await fantasyService.FetchPerformAsync(1);  // Adjust model as necessary
-    return Results.Ok(data);
-});
-
-
-app.MapGet("/fantasy/players", async ([FromServices] IPlayerServices playerServices) =>
-{
-    
-    var data = await playerServices.GetPlayersAsync();  // Adjust model as necessary
-    return Results.Ok(data);
-});
 
 
 

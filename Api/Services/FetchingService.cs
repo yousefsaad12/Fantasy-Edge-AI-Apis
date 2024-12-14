@@ -20,7 +20,7 @@ namespace Api.Services
             _configuration = configuration;
         }
 
-        public async Task<ICollection<PlayerStatAndPerJson>> FetchDataAsync(int _currentWeek)
+        public async Task<string> FetchDataAsync(int _currentWeek)
         {   
             string url = _configuration.GetValue<string>("FantasyApiSettings:BaseUrl");
 
@@ -56,7 +56,7 @@ namespace Api.Services
                 await _teamServices.InsertTeamsAndRelatedEntitiesAsync(fantasyForm.teamsJsonForms).ConfigureAwait(false);
                 await _playerServices.InsertPlayersAndRelatedEntitiesAsync(fantasyForm.playerJsonForms, playerStat, _currentWeek).ConfigureAwait(false);
                 
-                return playerStat;
+                return "Data had been fetched and stored in database";
             }
             catch (HttpRequestException httpEx)
             {
