@@ -20,4 +20,5 @@ global using Microsoft.AspNetCore.Identity;
 global using System.Text.Json.Serialization;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.IdentityModel.Tokens;
-
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Api.ModelsConfiguration;
