@@ -7,7 +7,7 @@ namespace Api.ModelsConfiguration
     {
         public void Configure(EntityTypeBuilder<PlayerPrediction> builder)
         {
-            builder.Property(p => p.playerId)
+            builder.Property(p => p.PlayerPredictionID)
                    .ValueGeneratedOnAdd(); 
 
             builder.HasIndex(p => p.playerName)

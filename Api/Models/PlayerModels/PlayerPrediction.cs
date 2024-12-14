@@ -3,7 +3,7 @@ namespace Api.Models.PlayerModels
 {
     public class PlayerPrediction
     {   
-        public int playerId { get; set; }
+        public int PlayerPredictionID { get; set; }
         public string ? playerName { get; set; } 
         public double predictedPoints { get; set; } = 0;
         public string ? percentageChange { get; set; }

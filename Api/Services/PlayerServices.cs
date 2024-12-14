@@ -91,7 +91,7 @@ namespace Api.Services
       
         }
 
-        public async Task<PlayerPredictions> GetPrediction(PlayerNameRequest playerPredictionReq)
+        public async Task<PlayerPredictionsResponse> GetPrediction(PlayerNameRequest playerPredictionReq)
         {
             try
             {
@@ -108,7 +108,7 @@ namespace Api.Services
                     string responseContent = await response.Content.ReadAsStringAsync();
                     _logger.LogInformation("Data fetched successfully: {ResponseContent}", responseContent);
 
-                    var prediction = JsonConvert.DeserializeObject<PlayerPredictions>(responseContent);
+                    var prediction = JsonConvert.DeserializeObject<PlayerPredictionsResponse>(responseContent);
                     Console.WriteLine(prediction);
                     return prediction; // Return the deserialized data
                 }
