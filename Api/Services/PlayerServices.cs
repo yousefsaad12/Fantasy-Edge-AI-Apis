@@ -1,6 +1,8 @@
 
 
 using System.Text;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 
 namespace Api.Services
@@ -60,7 +62,6 @@ namespace Api.Services
             }
         }
 
-
         public async Task<Player>? GetPlayerbyName(string FirstName, string SecondName)
         {
             try{
@@ -91,7 +92,7 @@ namespace Api.Services
       
         }
 
-        public async Task<PlayerPredictionsResponse> GetPrediction(PlayerNameRequest playerPredictionReq)
+        public async Task<PlayerPredictionsResponse ?> GetPredictionFromModel(PlayerNameRequest playerPredictionReq)
         {
             try
             {
@@ -107,9 +108,12 @@ namespace Api.Services
                 {
                     string responseContent = await response.Content.ReadAsStringAsync();
                     _logger.LogInformation("Data fetched successfully: {ResponseContent}", responseContent);
+                    if (string.IsNullOrWhiteSpace(responseContent) || responseContent == "null")
+                    {   
+                        return null; // Return null if the API returns an empty or null response
+                    }     
 
                     var prediction = JsonConvert.DeserializeObject<PlayerPredictionsResponse>(responseContent);
-                    Console.WriteLine(prediction);
                     return prediction; // Return the deserialized data
                 }
                 else
@@ -140,7 +144,6 @@ namespace Api.Services
                 return null; // Return null or handle it based on your needs
             }
     }
-
 
         public async Task InsertPlayersAndRelatedEntitiesAsync(IEnumerable<PlayerJsonForm> playerJsonForms, IEnumerable<PlayerStatAndPerJson> playerStatAndPerJsons, int currentWeek)
     {
@@ -201,45 +204,44 @@ namespace Api.Services
             }
     }
 
-
-            public async Task<bool> UpdatePlayer(Player existingPlayer, Player newPlayerData, PlayerPerformance pp, PlayerStatistics ps)
+        public async Task<bool> UpdatePlayer(Player existingPlayer, Player newPlayerData, PlayerPerformance pp, PlayerStatistics ps)
+        {
+            try
             {
-                try
+                if (string.IsNullOrWhiteSpace(newPlayerData.FirstName) || string.IsNullOrWhiteSpace(newPlayerData.SecondName))
                 {
-                    if (string.IsNullOrWhiteSpace(newPlayerData.FirstName) || string.IsNullOrWhiteSpace(newPlayerData.SecondName))
-                    {
-                        _logger.LogWarning("Attempted to update a player with invalid names: {FirstName} {SecondName} {Status}", newPlayerData.FirstName, newPlayerData.SecondName, newPlayerData.Status);
-                        throw new ArgumentException("Player names cannot be null or empty.");
-                    }
+                    _logger.LogWarning("Attempted to update a player with invalid names: {FirstName} {SecondName} {Status}", newPlayerData.FirstName, newPlayerData.SecondName, newPlayerData.Status);
+                    throw new ArgumentException("Player names cannot be null or empty.");
+                }
                     
-                    if(existingPlayer is null) throw new ArgumentNullException(nameof(existingPlayer), $"player is null");
-                    PlayerUpdateHelper.UpdateBasicPlayerProperties(existingPlayer, newPlayerData);
+                if(existingPlayer is null) throw new ArgumentNullException(nameof(existingPlayer), $"player is null");
+                PlayerUpdateHelper.UpdateBasicPlayerProperties(existingPlayer, newPlayerData);
 
-                    if(pp is not null && !existingPlayer.PlayerPerformances.Any(p => p.GameWeek == pp.GameWeek)) existingPlayer.PlayerPerformances.Add(pp);
+                if(pp is not null && !existingPlayer.PlayerPerformances.Any(p => p.GameWeek == pp.GameWeek)) existingPlayer.PlayerPerformances.Add(pp);
                     
-                    if(ps is not null && !existingPlayer.PlayerStatistics.Any(p => p.GameWeek == ps.GameWeek)) existingPlayer.PlayerStatistics.Add(ps);
+                if(ps is not null && !existingPlayer.PlayerStatistics.Any(p => p.GameWeek == ps.GameWeek)) existingPlayer.PlayerStatistics.Add(ps);
                   
-                    bool isSuccess =  await _unitOfWork.Players.UpdateOne(existingPlayer).ConfigureAwait(false);
+                bool isSuccess =  await _unitOfWork.Players.UpdateOne(existingPlayer).ConfigureAwait(false);
 
-                    if (isSuccess)
-                    {
-                        _logger.LogInformation("Player successfully updated: {FirstName} {SecondName}", newPlayerData.FirstName, newPlayerData.SecondName);
-                    }
-                    else
-                    {
-                        _logger.LogWarning("Failed to update player: {FirstName} {SecondName}", newPlayerData.FirstName, newPlayerData.SecondName);
-                    }
-
-                    return isSuccess;
-                }
-
-                catch (Exception ex)
+                if (isSuccess)
                 {
-                    _logger.LogError(ex, "An error occurred while updating player: {FirstName} {SecondName}", newPlayerData.FirstName, newPlayerData.SecondName);
-                    throw;
+                    _logger.LogInformation("Player successfully updated: {FirstName} {SecondName}", newPlayerData.FirstName, newPlayerData.SecondName);
                 }
+                else
+                {
+                    _logger.LogWarning("Failed to update player: {FirstName} {SecondName}", newPlayerData.FirstName, newPlayerData.SecondName);
+                }
+
+                return isSuccess;
             }
 
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating player: {FirstName} {SecondName}", newPlayerData.FirstName, newPlayerData.SecondName);
+                throw;
+            }
         }
+
     }
+}
 

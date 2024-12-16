@@ -10,8 +10,7 @@ namespace Api.Data
         public DbSet<PlayerPerformance> PlayerPerformance { get; set; }
         public DbSet<PlayerStatistics> PlayerStatistics { get; set; }
         public DbSet<ElementTypes> ElementTypes { get; set; }
-        public DbSet<Team> Teams { get; set; }
-        public DbSet<PlayerPrediction> PlayerPredictions { get; set; }      
+        public DbSet<Team> Teams { get; set; }   
         public DbSet<User> Users { get; set; }
        
 
@@ -32,7 +31,6 @@ namespace Api.Data
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof (UserConfigurations).Assembly);
             
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof (PlayerPredictionConfigurations).Assembly);    
         }
 
 

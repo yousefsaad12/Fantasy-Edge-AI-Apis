@@ -12,7 +12,7 @@ namespace Api.Repository
         public IGenericRepository<PlayerPerformance> PlayersPerformance { get; private set; }
         public IGenericRepository<PlayerStatistics> PlayersStatistics { get; private set; }
         public IGenericRepository<Team> Teams { get; private set; }
-         public IGenericRepository<User> Users { get; private set; }
+        public IGenericRepository<User> Users { get; private set; }
 
         public UnitOfWork(AppDbContext context, ILoggerFactory loggerFactory)
         {
