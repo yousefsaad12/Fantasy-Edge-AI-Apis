@@ -7,7 +7,8 @@ namespace Api.Repository
         private readonly AppDbContext _context;
         private readonly ILoggerFactory _loggerFactory;
 
-        public IGenericRepository<Player> Players { get; private set; }
+        public IPlayerRepository PlayerRep { get; private set; }
+        public IGenericRepository<Player> Players  { get; private set; } 
         public IGenericRepository<ElementTypes> ElementsTypes { get; private set; }
         public IGenericRepository<PlayerPerformance> PlayersPerformance { get; private set; }
         public IGenericRepository<PlayerStatistics> PlayersStatistics { get; private set; }
@@ -25,6 +26,7 @@ namespace Api.Repository
             PlayersStatistics = new GenericRepository<PlayerStatistics>(_context, _loggerFactory.CreateLogger<GenericRepository<PlayerStatistics>>());
             Teams = new GenericRepository<Team>(_context, _loggerFactory.CreateLogger<GenericRepository<Team>>());
             Users = new GenericRepository<User>(_context,_loggerFactory.CreateLogger<GenericRepository<User>>());
+            PlayerRep = new PlayerRepo(_context, _loggerFactory.CreateLogger<GenericRepository<Player>>());
         }
 
         public async Task<int> Complete()

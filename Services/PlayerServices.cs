@@ -1,8 +1,4 @@
-
-
 using System.Text;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 
 namespace Api.Services
@@ -244,6 +240,10 @@ namespace Api.Services
             }
         }
 
+        public async Task<IEnumerable<PlayerSearchResponse>> GetPlayerNames()
+        {
+            return await _unitOfWork.PlayerRep.GetPlayerNames().ConfigureAwait(false);
+        }
     }
 }
 

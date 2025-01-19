@@ -13,6 +13,7 @@ builder.Services.AddScoped<IAuthServices, AuthServices>();
 builder.Services.AddScoped<ITokenServices, TokenServices>();
 builder.Services.AddScoped<IModelServices, ModelServices>();
 builder.Services.AddScoped<ICacheServices, CacheServices>();
+builder.Services.AddScoped<IPlayerRepository, PlayerRepo>();
 
 builder.Services.AddDbContext<AppDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

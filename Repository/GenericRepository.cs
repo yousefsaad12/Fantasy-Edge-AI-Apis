@@ -1,5 +1,6 @@
 
-using Microsoft.EntityFrameworkCore;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {   
@@ -114,4 +115,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
        
         return await _context.Set<T>().FirstOrDefaultAsync(e => EF.Property<string>(e, "Email") == email, cancellationToken);
     }
+
+   
+
 }

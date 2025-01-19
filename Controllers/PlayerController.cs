@@ -17,15 +17,21 @@ namespace Api.Controllers
         }
         
         [HttpGet]
-        [Route("playersdata/train")]
+        [Route("names")]
 
-        public async Task<IActionResult> GetPlayersData()
-        {
-            var players = await _playerService.GetPlayersAsync().ConfigureAwait(false);
+        public async Task<IActionResult> GetPlayersNames()
+        {   
+            var response = _cacheServices.GetData< IEnumerable<PlayerSearchResponse>>("PlayerNames");
 
-            var DataToTrain = players.SelectMany(p => p.MapToPlayerDataForTrain()).ToList();
+            if(response is not null && response.Count() > 0) return Ok(response);
 
-            return Ok(DataToTrain);
+            IEnumerable<PlayerSearchResponse> playerSearchResponses = await _playerService.GetPlayerNames().ConfigureAwait(false);
+
+            if(playerSearchResponses is null) return NotFound(new { message = "Players not fetched." });
+
+            _cacheServices.SetData("PlayerNames", playerSearchResponses);
+
+            return Ok(playerSearchResponses);
         }
 
         [HttpGet]
@@ -34,8 +40,6 @@ namespace Api.Controllers
         public async Task<IActionResult> GetPlayersData([FromBody] PlayerSearchReq playerSearchReq)
         {
             var player = await _playerService.GetPlayerbyName(playerSearchReq.firstName, playerSearchReq.secondName).ConfigureAwait(false);
-
-            Console.WriteLine(player);
 
             if(player is null) return BadRequest("Player with this name is not found");
 

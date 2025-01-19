@@ -23,7 +23,7 @@ namespace Api.Services
         {
             var option = new DistributedCacheEntryOptions()
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(10),    
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1),    
             };
 
             _cache?.SetString(key, JsonSerializer.Serialize(data), option);
