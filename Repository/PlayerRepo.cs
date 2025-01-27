@@ -9,7 +9,7 @@ namespace Api.Repository
 
         public async Task<IEnumerable<PlayerSearchResponse>> GetPlayerNames()
         {
-            return await _context.Players.Select(p => new PlayerSearchResponse { firstName = p.FirstName,secondName = p.SecondName})
+            return await _context.Players.Select(p => new PlayerSearchResponse {Name = p.FirstName + " " + p.SecondName})
                                          .ToListAsync()
                                          .ConfigureAwait(false);
         }

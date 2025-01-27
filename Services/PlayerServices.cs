@@ -93,6 +93,11 @@ namespace Api.Services
       
         }
 
+        public async Task<IEnumerable<Player>> ? GetPlayersInfo()
+        {
+            return await _unitOfWork.Players.GetAll(p => p.elementType, p => p.team).ConfigureAwait(false);
+        }
+
         public async Task<PlayerPredictionsResponse ?> GetPredictionFromModel(PlayerNameRequest playerPredictionReq)
         {
             try
