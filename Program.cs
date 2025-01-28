@@ -81,7 +81,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // Replace with your frontend's URL
+        policy.WithOrigins("https://fantasy-edge-ai.vercel.app/") // Replace with your frontend's URL
               .AllowAnyHeader()
               .AllowAnyMethod();
     });

@@ -23,15 +23,15 @@ namespace Api.Controllers
 
         public async Task<IActionResult> GetPlayersNames()
         {   
-            var response = _cacheServices.GetData< IEnumerable<PlayerSearchResponse>>("PlayerNames");
+            //var response = _cacheServices.GetData< IEnumerable<PlayerSearchResponse>>("PlayerNames");
 
-            if(response is not null && response.Count() > 0) return Ok(response);
+            //if(response is not null && response.Count() > 0) return Ok(response);
 
             IEnumerable<PlayerSearchResponse> playerSearchResponses = await _playerService.GetPlayerNames().ConfigureAwait(false);
 
             if(playerSearchResponses is null) return NotFound(new { message = "Players not fetched." });
 
-            _cacheServices.SetData("PlayerNames", playerSearchResponses);
+            //_cacheServices.SetData("PlayerNames", playerSearchResponses);
 
             return Ok(playerSearchResponses);
         }
@@ -58,16 +58,16 @@ namespace Api.Controllers
         [Route("info")]
         public async Task<IActionResult> GetPlayersInfo()
         {   
-            var response = _cacheServices.GetData< IEnumerable<PlayerInfo>>("PlayerInformation");
+            //var response = _cacheServices.GetData< IEnumerable<PlayerInfo>>("PlayerInformation");
 
-            if(response is not null && response.Count() > 0) return Ok(response);
+            //if(response is not null && response.Count() > 0) return Ok(response);
 
             IEnumerable<Player> player = await _playerService.GetPlayersInfo().ConfigureAwait(false);
             IEnumerable<PlayerInfo> playerInfos =  player.Select(p => p.MapToPlayerInfo());
 
             if(playerInfos is null) return NotFound(new { message = "Players not fetched." });
 
-            _cacheServices.SetData("PlayerInformation", playerInfos);
+            //_cacheServices.SetData("PlayerInformation", playerInfos);
 
             return Ok(playerInfos);
         }
@@ -85,7 +85,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         [Route("predict")]
 
         public async Task<IActionResult> GetPlayerPrediction([FromBody] PlayerNameRequest playerPredictionReq)

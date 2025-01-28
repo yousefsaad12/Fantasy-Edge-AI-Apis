@@ -490,3 +490,6 @@ D:\FantasyEdge\Backend\Api\obj\Debug\net8.0\refint\Api.dll
 D:\FantasyEdge\Backend\Api\obj\Debug\net8.0\Api.pdb
 D:\FantasyEdge\Backend\Api\obj\Debug\net8.0\Api.genruntimeconfig.cache
 D:\FantasyEdge\Backend\Api\obj\Debug\net8.0\ref\Api.dll
+D:\FantasyEdge\Backend\Api\bin\Debug\net8.0\Api.staticwebassets.endpoints.json
+D:\FantasyEdge\Backend\Api\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+D:\FantasyEdge\Backend\Api\obj\Debug\net8.0\staticwebassets\msbuild.Api.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
