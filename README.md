@@ -1,5 +1,5 @@
 
-**# Fantasy Premier Edge - Backend**
+# Fantasy Premier Edge - Backend
 
 ## Overview
 
